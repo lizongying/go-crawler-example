@@ -12,7 +12,11 @@
 
 ### config
 
-* log level: DEBUG/INFO/WARN/ERROR
+* mongo.example.uri: mongo uri
+* mongo.example.database: mongo database
+* log.long_file: if set true, will log full file path.
+* log.level: DEBUG/INFO/WARN/ERROR
+* proxy.example: proxy
 
 clone
 
