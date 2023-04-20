@@ -4,12 +4,22 @@
 
 ## Usage
 
+### args
+
+* -c config file. must set it.
+* -f start func. default Test.
+* -m mode. default test. prod? dev? or another something.
+
+### config
+
 * log level: DEBUG/INFO/WARN/ERROR
 
-example
+clone
 
 ```shell
-git clone github.com/lizongying/go-crawler-example
+git clone git@github.com:lizongying/go-crawler-example.git
+cd go-crawler-example
+
 ```
 
 build
@@ -21,7 +31,11 @@ make
 run
 
 ```shell
-./releases/youtubeSpider -c example.yml
+./releases/youtubeSpider -c example.yml -f FromKeyword -m prod
 ```
 
+update package
 
+```shell
+go get -u github.com/lizongying/go-crawler@a1d1a9a
+```
