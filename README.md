@@ -14,6 +14,7 @@
 
 * mongo.example.uri: mongo uri
 * mongo.example.database: mongo database
+* log.filename: log file path
 * log.long_file: if set true, will log full file path.
 * log.level: DEBUG/INFO/WARN/ERROR
 * proxy.example: proxy
@@ -21,8 +22,8 @@
 clone
 
 ```shell
-git clone git@github.com:lizongying/go-crawler-example.git
-cd go-crawler-example
+git clone git@github.com:lizongying/go-crawler-example.git go-spiders
+cd go-spiders
 
 ```
 

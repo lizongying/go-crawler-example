@@ -3967,6 +3967,6 @@ type DataUser struct {
 	Link        string `bson:"link" json:"link"`
 	Email       string `bson:"email" json:"email"`
 	Followers   int    `bson:"followers" json:"followers"`
-	ViewAvg10   int    `bson:"view_avg10" json:"view_avg10"`
+	ViewAvg     int    `bson:"view_avg" json:"view_avg"`
 	Keyword     string `bson:"keyword" json:"keyword"`
 }

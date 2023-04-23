@@ -19,7 +19,7 @@ import (
 
 const Video = "EgIQAQ%253D%253D"
 
-type YoutubeSpider struct {
+type Spider struct {
 	*spider.BaseSpider
 
 	collectionYoutubeUser string
@@ -39,7 +39,7 @@ type YoutubeSpider struct {
 	publishedTimeRe *regexp.Regexp
 }
 
-func (s *YoutubeSpider) RequestSearch(ctx context.Context, request *pkg.Request) (err error) {
+func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err error) {
 	extra := request.Extra.(*ExtraSearch)
 	s.Logger.Info("Search", utils.JsonStr(extra))
 	if ctx == nil {
@@ -135,7 +135,7 @@ func (s *YoutubeSpider) RequestSearch(ctx context.Context, request *pkg.Request)
 	return
 }
 
-func (s *YoutubeSpider) RequestSearchApi(ctx context.Context, request *pkg.Request) (err error) {
+func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (err error) {
 	extra := request.Extra.(*ExtraSearch)
 	s.Logger.Info("SearchApi", utils.JsonStr(extra))
 	if ctx == nil {
@@ -224,7 +224,7 @@ func (s *YoutubeSpider) RequestSearchApi(ctx context.Context, request *pkg.Reque
 	return
 }
 
-func (s *YoutubeSpider) RequestVideos(ctx context.Context, request *pkg.Request) (err error) {
+func (s *Spider) RequestVideos(ctx context.Context, request *pkg.Request) (err error) {
 	extra := request.Extra.(*ExtraUser)
 	s.Logger.Info("Videos", utils.JsonStr(extra))
 	if ctx == nil {
@@ -253,8 +253,6 @@ func (s *YoutubeSpider) RequestVideos(ctx context.Context, request *pkg.Request)
 
 	viewAvg := 0
 	viewTotal := 0
-	ok := false
-	begin := time.Now().AddDate(0, -3, 0)
 	for _, v := range respVideos.Contents.TwoColumnBrowseResultsRenderer.Tabs {
 		if v.TabRenderer.Title != "Videos" {
 			continue
@@ -302,22 +300,11 @@ func (s *YoutubeSpider) RequestVideos(ctx context.Context, request *pkg.Request)
 				default:
 				}
 			}
-			if time.Unix(t, 0).After(begin) {
-				ok = true
-			}
 
 			i++
 			viewTotal += viewCount
 			viewAvg = viewTotal / i
-			if i > 6 {
-				break
-			}
 		}
-	}
-
-	if !ok {
-		s.Logger.Warning("out date")
-		return
 	}
 
 	subscriber := respVideos.Header.C4TabbedHeaderRenderer.SubscriberCountText.SimpleText
@@ -355,34 +342,32 @@ func (s *YoutubeSpider) RequestVideos(ctx context.Context, request *pkg.Request)
 		link = urls[0]
 	}
 
-	if viewAvg > 1000 {
-		data := DataUser{
-			Id:          extra.Id,
-			UserName:    extra.UserName,
-			Description: description,
-			Link:        link,
-			Email:       email,
-			Followers:   followers,
-			ViewAvg10:   viewAvg,
-			Keyword:     extra.KeyWord,
-		}
-		item := pkg.Item{
-			Collection: s.collectionYoutubeUser,
-			Id:         extra.Id,
-			UniqueKey:  extra.Id,
-			Data:       &data,
-		}
-		err = s.YieldItem(&item)
-		if err != nil {
-			s.Logger.Error(err)
-			return err
-		}
+	data := DataUser{
+		Id:          extra.Id,
+		UserName:    extra.UserName,
+		Description: description,
+		Link:        link,
+		Email:       email,
+		Followers:   followers,
+		ViewAvg:     viewAvg,
+		Keyword:     extra.KeyWord,
+	}
+	item := pkg.Item{
+		Collection: s.collectionYoutubeUser,
+		Id:         extra.Id,
+		UniqueKey:  extra.Id,
+		Data:       &data,
+	}
+	err = s.YieldItem(&item)
+	if err != nil {
+		s.Logger.Error(err)
+		return err
 	}
 
 	return
 }
 
-func (s *YoutubeSpider) RequestUserApi(ctx context.Context, request *pkg.Request) (err error) {
+func (s *Spider) RequestUserApi(ctx context.Context, request *pkg.Request) (err error) {
 	extra := request.Extra.(*ExtraUser)
 	s.Logger.Info("UserApi", utils.JsonStr(extra))
 	if ctx == nil {
@@ -407,8 +392,6 @@ func (s *YoutubeSpider) RequestUserApi(ctx context.Context, request *pkg.Request
 
 	viewAvg := 0
 	viewTotal := 0
-	ok := false
-	begin := time.Now().AddDate(0, -3, 0)
 	for _, v := range respUser.Contents.TwoColumnBrowseResultsRenderer.Tabs {
 		if v.TabRenderer.Title != "Home" {
 			continue
@@ -456,24 +439,13 @@ func (s *YoutubeSpider) RequestUserApi(ctx context.Context, request *pkg.Request
 						default:
 						}
 					}
-					if time.Unix(t, 0).After(begin) {
-						ok = true
-					}
 
 					i++
 					viewTotal += viewCount
 					viewAvg = viewTotal / i
-					if i > 10 {
-						break
-					}
 				}
 			}
 		}
-	}
-
-	if !ok {
-		s.Logger.Warning("out date")
-		return
 	}
 
 	subscriber := respUser.Header.C4TabbedHeaderRenderer.SubscriberCountText.SimpleText
@@ -511,33 +483,31 @@ func (s *YoutubeSpider) RequestUserApi(ctx context.Context, request *pkg.Request
 		link = urls[0]
 	}
 
-	if viewAvg > 1000 && viewAvg < 100000 {
-		data := DataUser{
-			Id:          extra.Id,
-			UserName:    extra.UserName,
-			Description: description,
-			Link:        link,
-			Email:       email,
-			Followers:   followers,
-			ViewAvg10:   viewAvg,
-			Keyword:     extra.KeyWord,
-		}
-		item := pkg.Item{
-			Collection: s.collectionYoutubeUser,
-			Id:         data.Id,
-			Data:       &data,
-		}
-		err = s.YieldItem(&item)
-		if err != nil {
-			s.Logger.Error(err)
-			return err
-		}
+	data := DataUser{
+		Id:          extra.Id,
+		UserName:    extra.UserName,
+		Description: description,
+		Link:        link,
+		Email:       email,
+		Followers:   followers,
+		ViewAvg:     viewAvg,
+		Keyword:     extra.KeyWord,
+	}
+	item := pkg.Item{
+		Collection: s.collectionYoutubeUser,
+		Id:         data.Id,
+		Data:       &data,
+	}
+	err = s.YieldItem(&item)
+	if err != nil {
+		s.Logger.Error(err)
+		return err
 	}
 
 	return
 }
 
-func (s *YoutubeSpider) Test(_ context.Context) (err error) {
+func (s *Spider) Test(_ context.Context) (err error) {
 	err = s.RequestVideos(nil, &pkg.Request{
 		ProxyEnable: true,
 		Extra: &ExtraUser{
@@ -547,7 +517,7 @@ func (s *YoutubeSpider) Test(_ context.Context) (err error) {
 	return
 }
 
-func (s *YoutubeSpider) FromKeyword(_ context.Context) (err error) {
+func (s *Spider) FromKeyword(_ context.Context) (err error) {
 	for _, v := range []string{
 		"veja",
 		"tote bag",
@@ -566,19 +536,19 @@ func (s *YoutubeSpider) FromKeyword(_ context.Context) (err error) {
 	return
 }
 
-func NewYoutubeSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg.Spider, err error) {
+func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg.Spider, err error) {
 	if baseSpider == nil {
-		err = errors.New("spider is empty")
+		err = errors.New("nil baseSpider")
 		logger.Error(err)
 		return
 	}
 
 	baseSpider.Name = "youtube"
 	baseSpider.TimeoutRequest = time.Second * 30
-	baseSpider.SetMiddleware(NewYoutubeMiddleware(logger), 90)
-	spider = &YoutubeSpider{
+	baseSpider.SetMiddleware(NewMiddleware(logger), 90)
+	spider = &Spider{
 		BaseSpider:            baseSpider,
-		collectionYoutubeUser: "youtube_user_202304131",
+		collectionYoutubeUser: "youtube_user",
 		urlSearch:             "https://www.youtube.com/results?search_query=%s",
 		urlSearchApi:          "https://www.youtube.com/youtubei/v1/search?key=%s",
 		urlUserApi:            "https://www.youtube.com/youtubei/v1/browse?key=%s",
@@ -598,5 +568,5 @@ func NewYoutubeSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spi
 }
 
 func main() {
-	app.NewApp(NewYoutubeSpider).Run()
+	app.NewApp(NewSpider).Run()
 }
