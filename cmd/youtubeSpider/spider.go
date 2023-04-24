@@ -89,7 +89,7 @@ func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err e
 				e := s.RequestVideos(ctx, &pkg.Request{
 					ProxyEnable: true,
 					UniqueKey:   id,
-					Extra: &ExtraUser{
+					Extra: &ExtraVideos{
 						KeyWord:  extra.Keyword,
 						Id:       id,
 						Key:      runs[0].NavigationEndpoint.BrowseEndpoint.BrowseID,
@@ -119,7 +119,7 @@ func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err e
 	}
 	err = s.RequestSearchApi(ctx, &pkg.Request{
 		ProxyEnable: true,
-		Extra: &ExtraSearch{
+		Extra: &ExtraSearchApi{
 			Keyword:       extra.Keyword,
 			Sp:            extra.Sp,
 			Page:          extra.Page + 1,
@@ -136,7 +136,7 @@ func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err e
 }
 
 func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (err error) {
-	extra := request.Extra.(*ExtraSearch)
+	extra := request.Extra.(*ExtraSearchApi)
 	s.Logger.Info("SearchApi", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
@@ -185,7 +185,7 @@ func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (er
 				e := s.RequestVideos(ctx, &pkg.Request{
 					ProxyEnable: true,
 					UniqueKey:   id,
-					Extra: &ExtraUser{
+					Extra: &ExtraVideos{
 						KeyWord:  extra.Keyword,
 						Id:       id,
 						Key:      runs[0].NavigationEndpoint.BrowseEndpoint.BrowseID,
@@ -207,7 +207,7 @@ func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (er
 		}
 		err = s.RequestSearchApi(ctx, &pkg.Request{
 			ProxyEnable: true,
-			Extra: &ExtraSearch{
+			Extra: &ExtraSearchApi{
 				Keyword:       extra.Keyword,
 				Sp:            extra.Sp,
 				Page:          extra.Page + 1,
@@ -225,7 +225,7 @@ func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (er
 }
 
 func (s *Spider) RequestVideos(ctx context.Context, request *pkg.Request) (err error) {
-	extra := request.Extra.(*ExtraUser)
+	extra := request.Extra.(*ExtraVideos)
 	s.Logger.Info("Videos", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
@@ -368,7 +368,7 @@ func (s *Spider) RequestVideos(ctx context.Context, request *pkg.Request) (err e
 }
 
 func (s *Spider) RequestUserApi(ctx context.Context, request *pkg.Request) (err error) {
-	extra := request.Extra.(*ExtraUser)
+	extra := request.Extra.(*ExtraUserApi)
 	s.Logger.Info("UserApi", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
@@ -510,7 +510,7 @@ func (s *Spider) RequestUserApi(ctx context.Context, request *pkg.Request) (err 
 func (s *Spider) Test(_ context.Context) (err error) {
 	err = s.RequestVideos(nil, &pkg.Request{
 		ProxyEnable: true,
-		Extra: &ExtraUser{
+		Extra: &ExtraVideos{
 			Id: "sierramarie",
 		},
 	})

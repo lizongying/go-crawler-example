@@ -3953,7 +3953,22 @@ type ExtraSearch struct {
 	NextPageToken string
 }
 
-type ExtraUser struct {
+type ExtraSearchApi struct {
+	Keyword       string
+	Sp            string
+	Page          int
+	MaxPage       int
+	NextPageToken string
+}
+
+type ExtraVideos struct {
+	KeyWord  string
+	Id       string
+	Key      string
+	UserName string
+}
+
+type ExtraUserApi struct {
 	KeyWord  string
 	Id       string
 	Key      string

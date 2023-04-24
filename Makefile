@@ -1,9 +1,12 @@
 .PHONY: all
 
-all:  youtubeSpider
+all: tidy youtubeSpider
 
+module := github.com/lizongying/go-crawler
+
+tidy:
+	go mod tidy
 
 youtubeSpider:
-	go mod tidy
 	go vet ./cmd/youtubeSpider
-	go build -ldflags "-s -w" -o ./releases/youtubeSpider ./cmd/youtubeSpider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=youtube" -o ./releases/youtubeSpider ./cmd/youtubeSpider

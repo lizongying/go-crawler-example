@@ -3,7 +3,7 @@ mongo:
     uri:
     database:
 log:
-  filename: /tmp/spider.log
+  filename: /tmp/spider_{name}.log
   long_file: true
   level: debug
 proxy:

@@ -14,8 +14,8 @@
 
 * mongo.example.uri: mongo uri
 * mongo.example.database: mongo database
-* log.filename: log file path
-* log.long_file: if set true, will log full file path.
+* log.filename: Log file path. You can replace {name} with ldflags.
+* log.long_file: If set to true, the full file path is logged.
 * log.level: DEBUG/INFO/WARN/ERROR
 * proxy.example: proxy
 
@@ -36,11 +36,11 @@ make
 run
 
 ```shell
-./releases/youtubeSpider -c example.yml -f FromKeyword -m prod
+./releases/youtubeSpider -c dev.yml -f FromKeyword -m prod
 ```
 
 update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@a1d1a9a
+go get -u github.com/lizongying/go-crawler@806e523
 ```
