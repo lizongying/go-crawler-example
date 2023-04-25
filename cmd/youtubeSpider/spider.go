@@ -4,30 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
 	"github.com/lizongying/go-crawler/pkg/logger"
 	"github.com/lizongying/go-crawler/pkg/spider"
 	"github.com/lizongying/go-crawler/pkg/utils"
-	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
 
-const Video = "EgIQAQ%253D%253D"
-
 type Spider struct {
 	*spider.BaseSpider
 
 	collectionYoutubeUser string
-
-	urlSearch    string
-	urlSearchApi string
-	urlUserApi   string
-	urlVideos    string
 
 	apiKey          string
 	initialDataRe   *regexp.Regexp
@@ -39,22 +30,11 @@ type Spider struct {
 	publishedTimeRe *regexp.Regexp
 }
 
-func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err error) {
-	extra := request.Extra.(*ExtraSearch)
+func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err error) {
+	extra := response.Request.Extra.(*ExtraSearch)
 	s.Logger.Info("Search", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
-	}
-
-	keyword := url.QueryEscape(extra.Keyword)
-	request.Url = fmt.Sprintf(s.urlSearch, keyword)
-	if extra.Sp == Video {
-		request.Url += fmt.Sprintf("&sp=%s", Video)
-	}
-	response, err := s.Request(ctx, request)
-	if err != nil {
-		s.Logger.Error(err)
-		return err
 	}
 
 	r := s.initialDataRe.FindSubmatch(response.BodyBytes)
@@ -86,7 +66,7 @@ func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err e
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
-				e := s.RequestVideos(ctx, &pkg.Request{
+				e := s.YieldRequest(&pkg.Request{
 					ProxyEnable: true,
 					UniqueKey:   id,
 					Extra: &ExtraVideos{
@@ -95,6 +75,7 @@ func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err e
 						Key:      runs[0].NavigationEndpoint.BrowseEndpoint.BrowseID,
 						UserName: runs[0].Text,
 					},
+					CallBack: s.ParseVideos,
 				})
 				if e != nil {
 					s.Logger.Error(e)
@@ -117,7 +98,7 @@ func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err e
 		s.Logger.Info("max page")
 		return
 	}
-	err = s.RequestSearchApi(ctx, &pkg.Request{
+	err = s.YieldRequest(&pkg.Request{
 		ProxyEnable: true,
 		Extra: &ExtraSearchApi{
 			Keyword:       extra.Keyword,
@@ -126,6 +107,7 @@ func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err e
 			MaxPage:       extra.MaxPage,
 			NextPageToken: token,
 		},
+		CallBack: s.ParseSearchApi,
 	})
 	if err != nil {
 		s.Logger.Error(err)
@@ -135,20 +117,11 @@ func (s *Spider) RequestSearch(ctx context.Context, request *pkg.Request) (err e
 	return
 }
 
-func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (err error) {
-	extra := request.Extra.(*ExtraSearchApi)
+func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (err error) {
+	extra := response.Request.Extra.(*ExtraSearchApi)
 	s.Logger.Info("SearchApi", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
-	}
-
-	request.Method = "POST"
-	request.Url = fmt.Sprintf(s.urlSearchApi, s.apiKey)
-	request.BodyStr = fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"continuation":"%s"}`, extra.NextPageToken)
-	response, err := s.Request(ctx, request)
-	if err != nil {
-		s.Logger.Error(err)
-		return err
 	}
 
 	var respSearch RespSearchApi
@@ -182,7 +155,7 @@ func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (er
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
-				e := s.RequestVideos(ctx, &pkg.Request{
+				e := s.YieldRequest(&pkg.Request{
 					ProxyEnable: true,
 					UniqueKey:   id,
 					Extra: &ExtraVideos{
@@ -191,6 +164,7 @@ func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (er
 						Key:      runs[0].NavigationEndpoint.BrowseEndpoint.BrowseID,
 						UserName: runs[0].Text,
 					},
+					CallBack: s.ParseVideos,
 				})
 				if e != nil {
 					s.Logger.Error(e)
@@ -205,7 +179,7 @@ func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (er
 			s.Logger.Info("max page")
 			return
 		}
-		err = s.RequestSearchApi(ctx, &pkg.Request{
+		err = s.YieldRequest(&pkg.Request{
 			ProxyEnable: true,
 			Extra: &ExtraSearchApi{
 				Keyword:       extra.Keyword,
@@ -214,6 +188,7 @@ func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (er
 				MaxPage:       extra.MaxPage,
 				NextPageToken: token,
 			},
+			CallBack: s.ParseSearchApi,
 		})
 		if err != nil {
 			s.Logger.Error(err)
@@ -224,18 +199,11 @@ func (s *Spider) RequestSearchApi(ctx context.Context, request *pkg.Request) (er
 	return
 }
 
-func (s *Spider) RequestVideos(ctx context.Context, request *pkg.Request) (err error) {
-	extra := request.Extra.(*ExtraVideos)
+func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err error) {
+	extra := response.Request.Extra.(*ExtraVideos)
 	s.Logger.Info("Videos", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
-	}
-
-	request.Url = fmt.Sprintf(s.urlVideos, extra.Id)
-	response, err := s.Request(ctx, request)
-	if err != nil {
-		s.Logger.Error(err)
-		return err
 	}
 
 	r := s.initialDataRe.FindSubmatch(response.BodyBytes)
@@ -374,9 +342,6 @@ func (s *Spider) RequestUserApi(ctx context.Context, request *pkg.Request) (err 
 		ctx = context.Background()
 	}
 
-	request.Method = "POST"
-	request.Url = fmt.Sprintf(s.urlUserApi, s.apiKey)
-	request.BodyStr = fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"browseId":"%s"}`, extra.Key)
 	response, err := s.Request(ctx, request)
 	if err != nil {
 		s.Logger.Error(err)
@@ -508,11 +473,12 @@ func (s *Spider) RequestUserApi(ctx context.Context, request *pkg.Request) (err 
 }
 
 func (s *Spider) Test(_ context.Context) (err error) {
-	err = s.RequestVideos(nil, &pkg.Request{
+	err = s.YieldRequest(&pkg.Request{
 		ProxyEnable: true,
 		Extra: &ExtraVideos{
 			Id: "sierramarie",
 		},
+		CallBack: s.ParseVideos,
 	})
 	return
 }
@@ -522,7 +488,7 @@ func (s *Spider) FromKeyword(_ context.Context) (err error) {
 		"veja",
 		"tote bag",
 	} {
-		err = s.RequestSearch(nil, &pkg.Request{
+		err = s.YieldRequest(&pkg.Request{
 			ProxyEnable: true,
 			Extra: &ExtraSearch{
 				Keyword: v,
@@ -530,6 +496,7 @@ func (s *Spider) FromKeyword(_ context.Context) (err error) {
 				Page:    1,
 				//MaxPage: 1,
 			},
+			CallBack: s.ParseSearch,
 		})
 	}
 
@@ -549,10 +516,6 @@ func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg
 	spider = &Spider{
 		BaseSpider:            baseSpider,
 		collectionYoutubeUser: "youtube_user",
-		urlSearch:             "https://www.youtube.com/results?search_query=%s",
-		urlSearchApi:          "https://www.youtube.com/youtubei/v1/search?key=%s",
-		urlUserApi:            "https://www.youtube.com/youtubei/v1/browse?key=%s",
-		urlVideos:             "https://www.youtube.com/@%s/videos",
 
 		apiKey:          "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
 		initialDataRe:   regexp.MustCompile(`ytInitialData = (.+);</script>`),

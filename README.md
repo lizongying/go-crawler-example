@@ -42,5 +42,5 @@ run
 update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@806e523
+go get -u github.com/lizongying/go-crawler@f3c237e
 ```
