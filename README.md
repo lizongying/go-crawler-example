@@ -18,6 +18,10 @@
 * log.long_file: If set to true, the full file path is logged.
 * log.level: DEBUG/INFO/WARN/ERROR
 * proxy.example: proxy
+* request.concurrency: Number of concurrency
+* request.interval: Request interval(seconds). If set to 0, it is the default interval. If set to a negative number, it
+  is 0.
+* request.timeout: Request timeout(seconds)
 
 clone
 
@@ -42,5 +46,5 @@ run
 update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@f3c237e
+go get -u github.com/lizongying/go-crawler@d372e54 
 ```

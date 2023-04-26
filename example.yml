@@ -10,4 +10,5 @@ proxy:
   example:
 request:
   concurrency: 1
-  delay: 1
+  interval: 1
+  timeout: 30

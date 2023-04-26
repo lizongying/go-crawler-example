@@ -2,14 +2,17 @@ module github.com/lizongying/go-crawler-example
 
 go 1.20
 
-require github.com/lizongying/go-crawler v0.0.0-20230425105719-f3c237e92c88
+require github.com/lizongying/go-crawler v0.0.0-20230426051244-d372e5444f44
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/antchfx/htmlquery v1.2.5 // indirect
 	github.com/antchfx/xpath v1.2.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
+	github.com/lizongying/go-css v0.0.0-20230302074707-40988e39770f // indirect
 	github.com/lizongying/go-xpath v0.0.0-20230302062012-e992ea561c4d // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pkg/errors v0.9.1 // indirect

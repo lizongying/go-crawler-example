@@ -486,7 +486,6 @@ func (s *Spider) Test(_ context.Context) (err error) {
 func (s *Spider) FromKeyword(_ context.Context) (err error) {
 	for _, v := range []string{
 		"veja",
-		"tote bag",
 	} {
 		err = s.YieldRequest(&pkg.Request{
 			ProxyEnable: true,
