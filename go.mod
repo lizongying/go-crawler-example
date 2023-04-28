@@ -2,7 +2,7 @@ module github.com/lizongying/go-crawler-example
 
 go 1.20
 
-require github.com/lizongying/go-crawler v0.0.0-20230426051244-d372e5444f44
+require github.com/lizongying/go-crawler v0.0.0-20230428141903-d1bac7334048
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect

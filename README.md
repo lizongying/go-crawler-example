@@ -2,6 +2,12 @@
 
 [go-crawler-example](https://github.com/lizongying/go-crawler-example)
 
+## Feature
+
+* 为了方便开发调试，增加了本地httpserver，可以通过<code>-m dev</code>启用。可以自定义handle，仅需要实现<code>
+  pkg.Route</code>，然后注册即可。
+* 编写中间件的时候需要注意，name不能重复。注册的时候order不能重复
+
 ## Usage
 
 ### args
@@ -19,9 +25,12 @@
 * log.level: DEBUG/INFO/WARN/ERROR
 * proxy.example: proxy
 * request.concurrency: Number of concurrency
-* request.interval: Request interval(seconds). If set to 0, it is the default interval. If set to a negative number, it
+* request.interval: Request interval(seconds). If set to 0, it is the default interval(1). If set to a negative number,
+  it
   is 0.
 * request.timeout: Request timeout(seconds)
+* request.retry_max_times: Request retry max times
+* dev_addr: dev httpserver addr
 
 clone
 
@@ -46,5 +55,5 @@ run
 update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@d372e54 
+go get -u github.com/lizongying/go-crawler@d1bac73 
 ```
