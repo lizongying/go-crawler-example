@@ -24,8 +24,8 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/lizongying/go-crawler v0.0.0-20230428155930-a594453fe44a h1:Cn7X3eyZXedkpJHGtMS3LZY3bEebF6Sa51McT/0Iu3k=
-github.com/lizongying/go-crawler v0.0.0-20230428155930-a594453fe44a/go.mod h1:MtayrltPH05W29pcd3xwj2W+zNBeKyHR6iPHNWPvi9I=
+github.com/lizongying/go-crawler v0.0.0-20230504050207-622cb9f1844e h1:UcHiaT8phxYLPdMFPnpy8KisFBIArQuJJYNRzfHyxsA=
+github.com/lizongying/go-crawler v0.0.0-20230504050207-622cb9f1844e/go.mod h1:MtayrltPH05W29pcd3xwj2W+zNBeKyHR6iPHNWPvi9I=
 github.com/lizongying/go-css v0.0.0-20230302074707-40988e39770f h1:ICgWO1xo6yleYReRgwOhx6p0f0S1HFD7Io0CySaTS3A=
 github.com/lizongying/go-css v0.0.0-20230302074707-40988e39770f/go.mod h1:It8m5tH1f8G4L/tSRuB6VhHKFWl+3F7BVSHonoGEcMQ=
 github.com/lizongying/go-xpath v0.0.0-20230302062012-e992ea561c4d h1:hLfsCi9nGlsKL0IaSMHQ/uMTi06m6rGZrEu2/1X2Va8=
