@@ -322,149 +322,13 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 		Keyword:     extra.KeyWord,
 	}
 	item := pkg.ItemMongo{
-		Collection: s.collectionYoutubeUser,
-		UniqueKey:  extra.Id,
-		Id:         extra.Id,
 		Update:     true,
-		Data:       &data,
-	}
-	err = s.YieldItem(&item)
-	if err != nil {
-		s.Logger.Error(err)
-		return err
-	}
-
-	return
-}
-
-func (s *Spider) RequestUserApi(ctx context.Context, request *pkg.Request) (err error) {
-	extra := request.Extra.(*ExtraUserApi)
-	s.Logger.Info("UserApi", utils.JsonStr(extra))
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
-	response, err := s.Request(ctx, request)
-	if err != nil {
-		s.Logger.Error(err)
-		return err
-	}
-
-	var respUser RespUserApi
-	err = json.Unmarshal(response.BodyBytes, &respUser)
-	if err != nil {
-		s.Logger.Error(err)
-		return
-	}
-
-	viewAvg := 0
-	viewTotal := 0
-	for _, v := range respUser.Contents.TwoColumnBrowseResultsRenderer.Tabs {
-		if v.TabRenderer.Title != "Home" {
-			continue
-		}
-
-		for _, v1 := range v.TabRenderer.Content.SectionListRenderer.Contents {
-			for _, v2 := range v1.ItemSectionRenderer.Contents {
-				i := 0
-				for _, v3 := range v2.ShelfRenderer.Content.HorizontalListRenderer.Items {
-					videoID := v3.GridVideoRenderer.VideoID
-					if videoID == "" {
-						continue
-					}
-
-					viewCountText := v3.GridVideoRenderer.ViewCountText.SimpleText
-					viewCount := 0
-					if viewCountText != "" && viewCountText != "No views" {
-						viewCountInt, e := strconv.Atoi(strings.Join(s.intRe.FindAllString(viewCountText, -1), ""))
-						if e != nil {
-							s.Logger.Error(e, "viewCount", viewCountText)
-							continue
-						}
-						viewCount = viewCountInt
-					}
-
-					t := time.Now().Unix()
-					publishedTime := s.publishedTimeRe.FindStringSubmatch(v3.GridVideoRenderer.PublishedTimeText.SimpleText)
-					if len(publishedTime) == 3 {
-						i1, _ := strconv.Atoi(publishedTime[1])
-						switch publishedTime[2] {
-						case "year":
-							t -= int64(i1 * 60 * 60 * 24 * 30 * 365)
-						case "month":
-							t -= int64(i1 * 60 * 60 * 24 * 30)
-						case "week":
-							t -= int64(i1 * 60 * 60 * 24 * 7)
-						case "day":
-							t -= int64(i1 * 60 * 60 * 24)
-						case "hour":
-							t -= int64(i1 * 60 * 60)
-						case "minute":
-							t -= int64(i1 * 60)
-						case "second":
-							t -= int64(i1)
-						default:
-						}
-					}
-
-					i++
-					viewTotal += viewCount
-					viewAvg = viewTotal / i
-				}
-			}
-		}
-	}
-
-	subscriber := respUser.Header.C4TabbedHeaderRenderer.SubscriberCountText.SimpleText
-	index := strings.Index(subscriber, " ")
-	followers := 0
-	if index > 0 {
-		followersText := subscriber[0:index]
-		followers64, e := strconv.ParseFloat(strings.Join(s.floatRe.FindAllString(followersText, -1), ""), 64)
-		if e != nil {
-			s.Logger.Error(e, "followers64", subscriber)
-		}
-		if strings.HasSuffix(followersText, "T") {
-			followers = int(followers64 * 1000 * 1000 * 1000 * 1000)
-		} else if strings.HasSuffix(followersText, "G") {
-			followers = int(followers64 * 1000 * 1000 * 1000)
-		} else if strings.HasSuffix(followersText, "M") {
-			followers = int(followers64 * 1000 * 1000)
-		} else if strings.HasSuffix(followersText, "K") {
-			followers = int(followers64 * 1000)
-		} else {
-			followers = int(followers64)
-		}
-	}
-
-	description := strings.TrimSpace(respUser.Metadata.ChannelMetadataRenderer.Description)
-	email := ""
-	r := s.emailRe.FindAllString(description, -1)
-	if len(r) > 0 {
-		email = r[0]
-	}
-
-	link := ""
-	urls := s.urlRe.FindAllString(description, -1)
-	if len(urls) > 0 {
-		link = urls[0]
-	}
-
-	data := DataUser{
-		Id:          extra.Id,
-		UserName:    extra.UserName,
-		Description: description,
-		Link:        link,
-		Email:       email,
-		Followers:   followers,
-		ViewAvg:     viewAvg,
-		Keyword:     extra.KeyWord,
-	}
-	item := pkg.ItemMongo{
 		Collection: s.collectionYoutubeUser,
-		UniqueKey:  extra.Id,
-		Id:         data.Id,
-		Data:       &data,
+		ItemUnimplemented: pkg.ItemUnimplemented{
+			UniqueKey: extra.Id,
+			Id:        extra.Id,
+			Data:      &data,
+		},
 	}
 	err = s.YieldItem(&item)
 	if err != nil {
@@ -496,7 +360,7 @@ func (s *Spider) FromKeyword(_ context.Context, _ string) (err error) {
 				Keyword: v,
 				Sp:      Video,
 				Page:    1,
-				//MaxPage: 1,
+				MaxPage: 2,
 			},
 			CallBack: s.ParseSearch,
 		})
@@ -514,8 +378,9 @@ func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg
 
 	baseSpider.Name = "youtube"
 	baseSpider.Timeout = time.Second * 30
-	baseSpider.SetMiddleware(NewMiddleware(logger), 90)
-	baseSpider.SetMiddleware(middlewares.NewMongoMiddleware(logger, baseSpider.MongoDb), 141)
+	baseSpider.
+		SetMiddleware(NewMiddleware(logger), 90).
+		SetMiddleware(middlewares.NewMongoMiddleware(logger, baseSpider.MongoDb), 141)
 	spider = &Spider{
 		BaseSpider:            baseSpider,
 		collectionYoutubeUser: "youtube_user",

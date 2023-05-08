@@ -13,10 +13,6 @@ type CustomMiddleware struct {
 	spider pkg.Spider
 }
 
-func (m *CustomMiddleware) GetName() string {
-	return "custom"
-}
-
 func (m *CustomMiddleware) SpiderStart(_ context.Context, spider pkg.Spider) (err error) {
 	m.spider = spider
 	m.logger.Debug("start")

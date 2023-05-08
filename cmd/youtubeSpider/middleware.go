@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/logger"
@@ -13,23 +12,12 @@ const Video = "EgIQAQ%253D%253D"
 type Middleware struct {
 	pkg.UnimplementedMiddleware
 	logger *logger.Logger
-	spider pkg.Spider
 
 	urlSearch    string
 	urlSearchApi string
-	urlUserApi   string
 	urlVideos    string
 
 	apiKey string
-}
-
-func (m *Middleware) GetName() string {
-	return "youtube"
-}
-
-func (m *Middleware) SpiderStart(_ context.Context, spider pkg.Spider) (err error) {
-	m.spider = spider
-	return
 }
 
 func (m *Middleware) ProcessRequest(c *pkg.Context) (err error) {
@@ -55,13 +43,6 @@ func (m *Middleware) ProcessRequest(c *pkg.Context) (err error) {
 		extra := request.Extra.(*ExtraVideos)
 		request.Url = fmt.Sprintf(m.urlVideos, extra.Id)
 	}
-	_, ok = request.Extra.(*ExtraUserApi)
-	if ok {
-		extra := request.Extra.(*ExtraUserApi)
-		request.Method = "POST"
-		request.Url = fmt.Sprintf(m.urlUserApi, m.apiKey)
-		request.BodyStr = fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"browseId":"%s"}`, extra.Key)
-	}
 	request.SetHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
 
 	err = c.NextRequest()
@@ -74,7 +55,6 @@ func NewMiddleware(logger *logger.Logger) (middleware pkg.Middleware) {
 
 		urlSearch:    "https://www.youtube.com/results?search_query=%s",
 		urlSearchApi: "https://www.youtube.com/youtubei/v1/search?key=%s",
-		urlUserApi:   "https://www.youtube.com/youtubei/v1/browse?key=%s",
 		urlVideos:    "https://www.youtube.com/@%s/videos",
 
 		apiKey: "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
