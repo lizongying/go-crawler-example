@@ -2,7 +2,7 @@ module github.com/lizongying/go-crawler-example
 
 go 1.20
 
-require github.com/lizongying/go-crawler v0.0.0-20230508131548-98161655ad26
+require github.com/lizongying/go-crawler v0.0.0-20230509122411-632f09243b7c
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
@@ -11,14 +11,14 @@ require (
 	github.com/antchfx/xpath v1.2.4 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/klauspost/compress v1.13.6 // indirect
+	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/lizongying/go-css v0.0.0-20230302074707-40988e39770f // indirect
 	github.com/lizongying/go-xpath v0.0.0-20230508033725-6786fb94ccc1 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
-	github.com/xdg-go/scram v1.1.1 // indirect
-	github.com/xdg-go/stringprep v1.0.3 // indirect
+	github.com/xdg-go/scram v1.1.2 // indirect
+	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.mongodb.org/mongo-driver v1.11.3 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
