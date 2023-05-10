@@ -2,4 +2,5 @@
 .idea
 .README.md
 dev.yml
+prod.yml
 releases
