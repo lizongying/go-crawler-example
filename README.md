@@ -46,7 +46,7 @@
 * log.level: DEBUG/INFO/WARN/ERROR
 * proxy.example: proxy
 * request.concurrency: Number of concurrency
-* request.interval: Request interval(seconds). If set to 0, it is the default interval(1). If set to a negative number,
+* request.interval: Request interval(Millisecond). If set to 0, it is the default interval(1). If set to a negative number,
   it
   is 0.
 * request.timeout: Request timeout(seconds)
@@ -78,5 +78,5 @@ run
 update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@632f092 
+go get -u github.com/lizongying/go-crawler@940b246 
 ```
