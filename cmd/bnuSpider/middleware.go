@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
-	"github.com/lizongying/go-crawler/pkg/logger"
 	"github.com/lizongying/go-crawler/pkg/utils"
 	"net/url"
 )
 
 type Middleware struct {
 	pkg.UnimplementedMiddleware
-	logger *logger.Logger
+	logger pkg.Logger
 
 	urlFind   string
 	urlSearch string
@@ -52,14 +51,13 @@ func (m *Middleware) ProcessResponse(c *pkg.Context) (err error) {
 	return
 }
 
-func NewMiddleware(logger *logger.Logger) (middleware pkg.Middleware) {
-	aes, _ := utils.NewAes([]byte("crzjmwlcmgylxtyl"), utils.ECB)
-	middleware = &Middleware{
-		logger: logger,
+func (m *Middleware) FromCrawler(spider pkg.Spider) pkg.Middleware {
+	m.logger = spider.GetLogger()
+	m.urlSearch = "https://qxk.bnu.edu.cn/qxkapi/gjqxk/hanzi/search"
+	m.urlFind = "https://qxk.bnu.edu.cn/qxkapi/gjqxk/bishun/find?content=%s&zifujiId=49c12ccb-35cc-437b-af4a-3fe126df8fca"
+	return m
+}
 
-		urlFind:   "https://qxk.bnu.edu.cn/qxkapi/gjqxk/bishun/find?content=%s&zifujiId=49c12ccb-35cc-437b-af4a-3fe126df8fca",
-		urlSearch: "https://qxk.bnu.edu.cn/qxkapi/gjqxk/hanzi/search",
-		aes:       aes,
-	}
-	return
+func NewMiddleware() pkg.Middleware {
+	return &Middleware{}
 }

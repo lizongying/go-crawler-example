@@ -133,8 +133,8 @@ func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg
 
 	baseSpider.Name = "bnu"
 	baseSpider.
-		SetMiddleware(NewMiddleware(logger), 90).
-		SetMiddleware(middlewares.NewMongoMiddleware(logger, baseSpider.MongoDb), 141)
+		SetMiddleware(NewMiddleware, 90).
+		SetMiddleware(middlewares.NewMongoMiddleware, 141)
 	spider = &Spider{
 		BaseSpider:        baseSpider,
 		collectionBnu8105: "bnu_8105",

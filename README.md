@@ -22,8 +22,9 @@
     * kafka
 * 在配置文件中可以配置全局request参数，在具体request中可以覆盖此配置
 * 解析模块
-    * query选择器 [go-query](https://github.com/lizongying/go-query)
-    * xpath选择器 [go-xpath](https://github.com/lizongying/go-xpath)
+    * query选择器. response.Query() [go-query](https://github.com/lizongying/go-query)
+    * xpath选择器. response.Xpath() [go-xpath](https://github.com/lizongying/go-xpath)
+    * gjson. response.Json()
 * 代理
     * 可以自行搭建隧道代理 [go-proxy](https://github.com/lizongying/go-proxy)
 
@@ -78,5 +79,5 @@ run
 update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@2021c14 
+go get -u github.com/lizongying/go-crawler@eda774b 
 ```

@@ -49,18 +49,15 @@ func (s *Spider) ParseList(_ context.Context, response *pkg.Response) (err error
 		s.Logger.Error(err)
 		return
 	}
-	items := x.FindStrMany(`//a/@href`)
-	s.Logger.Info(items)
 
+	items := x.FindStrMany(`//a/@href`)
 	for _, v := range items {
-		r := &pkg.Request{
+		e := s.YieldRequest(&pkg.Request{
 			Http: pkg.Http{
 				Url: fmt.Sprintf("https://www.zdic.net%s", v),
 			},
 			CallBack: s.ParseDetail,
-		}
-		r.SetHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
-		e := s.YieldRequest(r)
+		})
 		if e != nil {
 			s.Logger.Error(e)
 			continue
@@ -76,8 +73,8 @@ func (s *Spider) ParseDetail(_ context.Context, response *pkg.Response) (err err
 		s.Logger.Error(err)
 		return
 	}
-	fan := x.FindStrOne(`//span[text()="繁体"]/../a/text()`)
 
+	fan := x.FindStrOne(`//span[text()="繁体"]/../a/text()`)
 	id := response.Request.Url[strings.LastIndex(response.Request.Url, "/")+1:]
 	data := DataWord{
 		Id:  id,
@@ -135,7 +132,7 @@ func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg
 	baseSpider.Interval = 200
 	baseSpider.RetryMaxTimes = 100
 	baseSpider.
-		SetMiddleware(middlewares.NewMongoMiddleware(logger, baseSpider.MongoDb), 141)
+		SetMiddleware(middlewares.NewMongoMiddleware, 141)
 	spider = &Spider{
 		BaseSpider:         baseSpider,
 		collectionZdicWord: "zdic_word",
