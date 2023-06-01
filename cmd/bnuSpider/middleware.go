@@ -55,6 +55,7 @@ func (m *Middleware) FromCrawler(spider pkg.Spider) pkg.Middleware {
 	m.logger = spider.GetLogger()
 	m.urlSearch = "https://qxk.bnu.edu.cn/qxkapi/gjqxk/hanzi/search"
 	m.urlFind = "https://qxk.bnu.edu.cn/qxkapi/gjqxk/bishun/find?content=%s&zifujiId=49c12ccb-35cc-437b-af4a-3fe126df8fca"
+	m.aes, _ = utils.NewAes([]byte("crzjmwlcmgylxtyl"), utils.ECB)
 	return m
 }
 

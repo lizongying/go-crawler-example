@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: tidy youtubeSpider zdicSpider
+all: tidy bnuSpider youtubeSpider zdicSpider
 
 module := github.com/lizongying/go-crawler
 
