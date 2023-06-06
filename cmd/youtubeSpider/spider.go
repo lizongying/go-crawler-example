@@ -67,7 +67,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
-				e := s.YieldRequest(&pkg.Request{
+				e := s.YieldRequest(ctx, &pkg.Request{
 					ProxyEnable: true,
 					UniqueKey:   id,
 					Extra: &ExtraVideos{
@@ -99,7 +99,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 		s.Logger.Info("max page")
 		return
 	}
-	err = s.YieldRequest(&pkg.Request{
+	err = s.YieldRequest(ctx, &pkg.Request{
 		ProxyEnable: true,
 		Extra: &ExtraSearchApi{
 			Keyword:       extra.Keyword,
@@ -156,7 +156,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
-				e := s.YieldRequest(&pkg.Request{
+				e := s.YieldRequest(ctx, &pkg.Request{
 					ProxyEnable: true,
 					UniqueKey:   id,
 					Extra: &ExtraVideos{
@@ -180,7 +180,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 			s.Logger.Info("max page")
 			return
 		}
-		err = s.YieldRequest(&pkg.Request{
+		err = s.YieldRequest(ctx, &pkg.Request{
 			ProxyEnable: true,
 			Extra: &ExtraSearchApi{
 				Keyword:       extra.Keyword,
@@ -330,7 +330,7 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 			Data:      &data,
 		},
 	}
-	err = s.YieldItem(&item)
+	err = s.YieldItem(ctx, &item)
 	if err != nil {
 		s.Logger.Error(err)
 		return err
@@ -339,8 +339,8 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 	return
 }
 
-func (s *Spider) Test(_ context.Context, _ string) (err error) {
-	err = s.YieldRequest(&pkg.Request{
+func (s *Spider) Test(ctx context.Context, _ string) (err error) {
+	err = s.YieldRequest(ctx, &pkg.Request{
 		ProxyEnable: true,
 		Extra: &ExtraVideos{
 			Id: "sierramarie",
@@ -350,11 +350,11 @@ func (s *Spider) Test(_ context.Context, _ string) (err error) {
 	return
 }
 
-func (s *Spider) FromKeyword(_ context.Context, _ string) (err error) {
+func (s *Spider) FromKeyword(ctx context.Context, _ string) (err error) {
 	for _, v := range []string{
 		"veja",
 	} {
-		err = s.YieldRequest(&pkg.Request{
+		err = s.YieldRequest(ctx, &pkg.Request{
 			ProxyEnable: true,
 			Extra: &ExtraSearch{
 				Keyword: v,

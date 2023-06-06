@@ -34,7 +34,7 @@ func (s *Spider) ParseFind(ctx context.Context, response *pkg.Response) (err err
 
 	for _, v := range respFind.Data.List {
 		for _, v1 := range v.Data {
-			e := s.YieldRequest(&pkg.Request{
+			e := s.YieldRequest(ctx, &pkg.Request{
 				UniqueKey: v1.Hanzi,
 				Extra: &ExtraSearch{
 					Word: v1.Hanzi,
@@ -84,7 +84,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 			Data:      &data,
 		},
 	}
-	err = s.YieldItem(&item)
+	err = s.YieldItem(ctx, &item)
 	if err != nil {
 		s.Logger.Error(err)
 		return err
@@ -94,8 +94,8 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 }
 
 // Test go run cmd/bnuSpider/* -c dev.yml -m prod
-func (s *Spider) Test(_ context.Context, _ string) (err error) {
-	err = s.YieldRequest(&pkg.Request{
+func (s *Spider) Test(ctx context.Context, _ string) (err error) {
+	err = s.YieldRequest(ctx, &pkg.Request{
 		Extra: &ExtraSearch{
 			Word: "丰",
 		},
@@ -105,7 +105,7 @@ func (s *Spider) Test(_ context.Context, _ string) (err error) {
 }
 
 // FromFind go run cmd/bnuSpider/* -c dev.yml -f FromFind -m prod
-func (s *Spider) FromFind(_ context.Context, _ string) (err error) {
+func (s *Spider) FromFind(ctx context.Context, _ string) (err error) {
 	for _, v := range []string{
 		"1",
 		//"2",
@@ -113,7 +113,7 @@ func (s *Spider) FromFind(_ context.Context, _ string) (err error) {
 		//"4",
 		//"5",
 	} {
-		err = s.YieldRequest(&pkg.Request{
+		err = s.YieldRequest(ctx, &pkg.Request{
 			Extra: &ExtraFind{
 				Bishun: v,
 			},
