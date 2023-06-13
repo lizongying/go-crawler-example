@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"net/url"
@@ -19,8 +20,7 @@ type Middleware struct {
 	apiKey string
 }
 
-func (m *Middleware) ProcessRequest(c *pkg.Context) (err error) {
-	request := c.Request
+func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
 	_, ok := request.Extra.(*ExtraSearch)
 	if ok {
 		extra := request.Extra.(*ExtraSearch)
@@ -43,8 +43,6 @@ func (m *Middleware) ProcessRequest(c *pkg.Context) (err error) {
 		request.Url = fmt.Sprintf(m.urlVideos, extra.Id)
 	}
 	request.SetHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
-
-	err = c.NextRequest()
 	return
 }
 

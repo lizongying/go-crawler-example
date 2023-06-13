@@ -379,8 +379,8 @@ func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg
 	baseSpider.Name = "youtube"
 	baseSpider.Timeout = time.Second * 30
 	baseSpider.
-		SetMiddleware(NewMiddleware, 90).
-		SetMiddleware(middlewares.NewMongoMiddleware, 141)
+		SetMiddleware(new(Middleware), 9).
+		SetMiddleware(new(middlewares.MongoMiddleware), 141)
 	spider = &Spider{
 		BaseSpider:            baseSpider,
 		collectionYoutubeUser: "youtube_user",

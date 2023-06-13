@@ -18,17 +18,13 @@ func (m *CustomMiddleware) SpiderStart(_ context.Context, spider pkg.Spider) (er
 	return
 }
 
-func (m *CustomMiddleware) ProcessRequest(c *pkg.Context) (err error) {
-	if err = c.NextRequest(); err != nil {
-		m.logger.Error(err)
-	}
+func (m *CustomMiddleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
+	m.logger.Debug("request", request)
 	return
 }
 
-func (m *CustomMiddleware) ProcessResponse(c *pkg.Context) (err error) {
-	if err = c.NextResponse(); err != nil {
-		m.logger.Error(err)
-	}
+func (m *CustomMiddleware) ProcessResponse(_ context.Context, response *pkg.Response) (err error) {
+	m.logger.Debug("response", response)
 	return
 }
 

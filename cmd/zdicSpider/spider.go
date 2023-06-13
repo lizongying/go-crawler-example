@@ -132,7 +132,7 @@ func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg
 	baseSpider.Interval = 200
 	baseSpider.RetryMaxTimes = 100
 	baseSpider.
-		SetMiddleware(middlewares.NewMongoMiddleware, 141)
+		SetMiddleware(new(middlewares.MongoMiddleware), 141)
 	spider = &Spider{
 		BaseSpider:         baseSpider,
 		collectionZdicWord: "zdic_word",

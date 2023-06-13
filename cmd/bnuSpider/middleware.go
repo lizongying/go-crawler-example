@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/utils"
@@ -16,8 +17,7 @@ type Middleware struct {
 	aes       *utils.Aes
 }
 
-func (m *Middleware) ProcessRequest(c *pkg.Context) (err error) {
-	request := c.Request
+func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
 	_, ok := request.Extra.(*ExtraFind)
 	if ok {
 		extra := request.Extra.(*ExtraFind)
@@ -36,18 +36,11 @@ func (m *Middleware) ProcessRequest(c *pkg.Context) (err error) {
 		request.SetHeader("Content-Type", "application/x-www-form-urlencoded")
 		request.SetHeader("Accept", "application/json, text/plain, */*")
 	}
-
-	err = c.NextRequest()
 	return
 }
 
-func (m *Middleware) ProcessResponse(c *pkg.Context) (err error) {
-	response := c.Response
-
-	err = c.NextResponse()
-	e, _ := m.aes.Decrypt(string(response.BodyBytes))
-	response.BodyBytes = e
-
+func (m *Middleware) ProcessResponse(_ context.Context, response *pkg.Response) (err error) {
+	response.BodyBytes, _ = m.aes.Decrypt(string(response.BodyBytes))
 	return
 }
 

@@ -13,53 +13,84 @@ go-crawler的爬虫示例。
     * 默认显示ja3指纹。
     * 可以通过tls工具`tls`生成服务器的私钥和证书。
 * 需要返回的item需要实现Item（可以组合ItemUnimplemented）
+    * `GetReferer()` 可以获取到referer。
     * UniqueKey 唯一键，不会保存到数据库。可以用作过滤等其他用途。
     * Id 保存主键
     * Data 完整数据
     * 内置item：ItemCsv、ItemJsonl、ItemMongo、ItemMysql、ItemKafka
-* 中间件的order不能重复。编写的时候不要忘记`nextRequest()`/`nextResponse()`/`nextItem()`
+* 中间件的order不能重复。编写的时候不要忘记`nextItem()`
 * 本框架舍弃了pipeline概念，功能合并到middleware。在很多情况下，功能会有交叉，合并后会更方便，同时编写也更简单。
 * middleware包括框架内置、自定义公共（internal/middlewares）和自定义爬虫内（和爬虫同module）。
-* 框架内置middleware，自定义middleware请参照以下order进行配置。
-    * stats:100
+* 框架内置middleware，自定义middleware请参照以下order进行配置。内置中间件order为10的倍数，自定义中间件请避开。
+    * stats:10
+        * 数据统计
+        * 配置 enable_stats: true 是否开启统计，默认开启
     * device:101
         * 修改request设备信息。修改header和tls信息，暂时只支持user-agent随机切换。需要设置`SetPlatforms`和`SetBrowsers`
           限定设备范围。默认不启用。
-        * 启用方法。`spider.SetMiddleware(middlewares.NewDeviceMiddleware, 101)`
         * Platforms: Windows/Mac/Android/Iphone/Ipad/Linux
         * Browsers: Chrome/Edge/Safari/FireFox
-    * filter:110
+        * 配置 enable_device: false 随机模拟设备，默认关闭
+        * 代码 `spider.SetMiddleware(new(middlewares.DeviceMiddleware), 101)`
+    * filter:20
         * 过滤重复请求。默认支持的是item保存成功后才会进入去重队列，防止出现请求失败后再次请求却被过滤的问题。所以当请求速度大于保存速度的时候可能会有请求不被过滤的情况。
-    * retry:120
-        * 如果请求出错，会进行重试。默认启用，`RetryMaxTimes=3`
-    * referer:130
+        * 配置 enable_filter: true 是否开启过滤，默认开启
+    * retry:30
+        * 如果请求出错，会进行重试。
+        * `RetryMaxTimes=10`
+        * 配置 enable_retry: true 是否开启重试，默认开启
+    * url:40
+        * 限制url的长度
+        * 配置 enable_url: true 是否开启url长度限制，默认开启
+        * 配置 url_length_limit: 2083 url的最长长度默认为2083
+    * referer:50
         * 通过设置`referrer_policy`采用不同的referer策略，
         * DefaultReferrerPolicy。会加入请求来源，默认
         * NoReferrerPolicy。不加入请求来源
-    * http:140
-    * dump:150
-        * 在debug模式下打印item.data
-        * 默认启用
+    * cookie:60
+        * 如果之前请求返回cookie，会自动加到后面的请求里
+        * 配置 enable_cookie: true 是否开启cookie支持，默认开启
+    * http:70
+        * 创建request
+    * chrome:80
+        * 模拟chrome
+        * 配置 enable_chrome: true 模拟chrome，默认开启
+    * httpAuth:90
+        * 通过设置`username`、`password`添加httpAuth认证，
+        * 配置 enable_http_auth: false 是否开启httpAuth，默认关闭
+    * compress:100
+        * 支持 gzip/deflate解压缩
+        * 配置 enable_compress: true 是否开启gzip/deflate解压缩，默认开启
+    * decode:110
+        * 支持gbk、gb2310、big5中文解码
+        * 配置 enable_decode: true 是否开启中文解码，默认开启
+    * redirect:120
+        * 网址重定向，默认支持301、302
+        * 配置 enable_redirect: true 是否开启重定向，默认开启
+        * 配置 redirect_max_times: 1 重定向最大次数
+    * dump:80
+        * 控制台打印item.data
+        * 配置 enable_dump: true 是否开启打印item，默认开启
     * csv
         * 保存结果到csv文件。
         * 需在在ItemCsv中设置`FileName`，保存的文件名称，不包含.csv
-        * 启用方法。`spider.SetMiddleware(middlewares.NewCsvMiddleware, 151)`
-    * jsonlines
+        * 启用方法。`spider.SetMiddleware(middlewares.NewCsvMiddleware, 181)`
+    * jsonLines
         * 保存结果到jsonlines文件。
         * 需在在ItemJsonl中设置`FileName`，保存的文件名称，不包含.jsonl
-        * 启用方法。`spider.SetMiddleware(middlewares.NewJsonlinesMiddleware, 152)`
+        * 启用方法。`spider.SetMiddleware(middlewares.NewJsonLinesMiddleware, 182)`
     * mongo
         * 保存结果到mongo。
         * 需在在ItemMongo中设置`Collection`，保存的collection
-        * 启用方法。`spider.SetMiddleware(middlewares.NewMongoMiddleware, 153)`
+        * 启用方法。`spider.SetMiddleware(middlewares.NewMongoMiddleware, 183)`
     * mysql
         * 保存结果到mysql。
         * 需在在ItemMysql中设置`table`，保存的table
-        * 启用方法。`spider.SetMiddleware(middlewares.NewMysqlMiddleware, 154)`
+        * 启用方法。`spider.SetMiddleware(middlewares.NewMysqlMiddleware, 184)`
     * kafka
         * 保存结果到kafka。
         * 需在在ItemKafka中设置`Topic`，保存的topic
-        * 启用方法。`spider.SetMiddleware(middlewares.NewKafkaMiddleware, 155)`
+        * 启用方法。`spider.SetMiddleware(middlewares.NewKafkaMiddleware, 185)`
 * 在配置文件中可以配置全局request参数，在具体request中可以覆盖此配置
 * 解析模块
     * query选择器 [go-query](https://github.com/lizongying/go-query)
@@ -73,6 +104,24 @@ go-crawler的爬虫示例。
 * 代理
     * 可以自行搭建隧道代理 [go-proxy](https://github.com/lizongying/go-proxy)
       。这是一个随机切换的隧道代理，调用方无感知，方便使用。后期会加入一些其他的调用方式，比如维持原来的代理地址。
+* 增加爬虫性能
+    * 在不影响功能的情况下，可以考虑关闭一些用不到的中间件。可以在配置文件中修改，或者爬虫入口中修改
+    * 配置文件:
+        * enable_retry: false
+        * enable_stats: false
+        * enable_filter: false
+        * enable_referer: false
+        * enable_http_auth: false
+        * enable_cookie: false
+        * enable_dump: false
+        * enable_url: false
+        * enable_compress: false
+        * enable_decode: false
+        * enable_redirect: false
+        * enable_chrome: false
+        * enable_device: false
+* 爬虫结构
+    * 建议按照每个网站（子网站）或者每个业务为一个spider。不必分的太细，也不必把所有的网站和业务都写在一个spider里
 
 ### args
 
@@ -89,16 +138,33 @@ go-crawler的爬虫示例。
 * log.long_file: If set to true, the full file path is logged.
 * log.level: DEBUG/INFO/WARN/ERROR
 * proxy.example: proxy
-* request.concurrency: Number of concurrency
+* request.concurrency: Number of request concurrency
 * request.interval: Request interval(Millisecond). If set to 0, it is the default interval(1). If set to a negative
   number,
   it
   is 0.
 * request.timeout: Request timeout(seconds)
 * request.ok_http_codes: Request ok httpcodes
-* request.retry_max_times: Request retry max times
+* request.retry_max_times: Request retry max times，默认10
 * request.http_proto: Request http proto
 * dev_server: devServer。如http`http://localhost:8081`，https`https://localhost:8081`。
+* enable_ja3: false devServer是否显示ja3指纹，默认关闭
+* enable_retry: true 是否开启重试，默认开启
+* enable_stats: true 是否开启统计，默认开启
+* enable_filter: true 是否开启过滤，默认开启
+* enable_referer: true 是否开启referer，默认开启
+* referrer_policy: DefaultReferrerPolicy 来源政策，默认DefaultReferrerPolicy，可选DefaultReferrerPolicy、NoReferrerPolicy
+* enable_http_auth: true 是否开启httpAuth，默认开启
+* enable_cookie: true 是否开启cookie，默认开启
+* enable_dump: true 是否开启打印item，默认开启
+* enable_url: true 是否开启url长度限制，默认开启
+* url_length_limit: 2083 url长度限制，默认2083
+* enable_compress: true 是否开启gzip/deflate解压缩，默认开启
+* enable_decode: true 是否开启中文解码，默认开启
+* enable_redirect: true 是否开启重定向，默认开启
+* redirect_max_times: 1 重定向最大次数，默认1
+* enable_chrome: true 模拟chrome，默认开启
+* enable_device: false 随机模拟设备，默认关闭
 
 clone
 
@@ -123,5 +189,5 @@ run
 update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@18aa07d
+go get -u github.com/lizongying/go-crawler@543d12c
 ```
