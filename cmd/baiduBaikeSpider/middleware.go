@@ -36,7 +36,3 @@ func (m *Middleware) FromCrawler(spider pkg.Spider) pkg.Middleware {
 	m.urlDetail = "https://baike.baidu.com/item/%s%s"
 	return m
 }
-
-func NewMiddleware() pkg.Middleware {
-	return &Middleware{}
-}

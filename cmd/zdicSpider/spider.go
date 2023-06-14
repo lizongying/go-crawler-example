@@ -7,7 +7,7 @@ import (
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
 	"github.com/lizongying/go-crawler/pkg/logger"
-	"github.com/lizongying/go-crawler/pkg/middlewares"
+	"github.com/lizongying/go-crawler/pkg/pipelines"
 	"github.com/lizongying/go-crawler/pkg/spider"
 	"strings"
 	"time"
@@ -131,8 +131,7 @@ func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg
 	baseSpider.Timeout = time.Minute
 	baseSpider.Interval = 200
 	baseSpider.RetryMaxTimes = 100
-	baseSpider.
-		SetMiddleware(new(middlewares.MongoMiddleware), 141)
+	baseSpider.SetPipeline(new(pipelines.MongoPipeline), 141)
 	spider = &Spider{
 		BaseSpider:         baseSpider,
 		collectionZdicWord: "zdic_word",

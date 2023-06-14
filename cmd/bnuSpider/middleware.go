@@ -51,7 +51,3 @@ func (m *Middleware) FromCrawler(spider pkg.Spider) pkg.Middleware {
 	m.aes, _ = utils.NewAes([]byte("crzjmwlcmgylxtyl"), utils.ECB)
 	return m
 }
-
-func NewMiddleware() pkg.Middleware {
-	return &Middleware{}
-}

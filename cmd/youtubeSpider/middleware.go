@@ -54,7 +54,3 @@ func (m *Middleware) FromCrawler(spider pkg.Spider) pkg.Middleware {
 	m.apiKey = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
 	return m
 }
-
-func NewMiddleware() pkg.Middleware {
-	return &Middleware{}
-}
