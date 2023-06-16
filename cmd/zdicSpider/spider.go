@@ -6,23 +6,21 @@ import (
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
-	"github.com/lizongying/go-crawler/pkg/logger"
 	"github.com/lizongying/go-crawler/pkg/pipelines"
-	"github.com/lizongying/go-crawler/pkg/spider"
 	"strings"
 	"time"
 )
 
 type Spider struct {
-	*spider.BaseSpider
-
+	pkg.Spider
+	logger             pkg.Logger
 	collectionZdicWord string
 }
 
 func (s *Spider) ParseCategory(ctx context.Context, response *pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 
@@ -35,7 +33,7 @@ func (s *Spider) ParseCategory(ctx context.Context, response *pkg.Response) (err
 			CallBack: s.ParseList,
 		})
 		if e != nil {
-			s.Logger.Error(e)
+			s.logger.Error(e)
 			continue
 		}
 	}
@@ -46,7 +44,7 @@ func (s *Spider) ParseCategory(ctx context.Context, response *pkg.Response) (err
 func (s *Spider) ParseList(ctx context.Context, response *pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 
@@ -59,7 +57,7 @@ func (s *Spider) ParseList(ctx context.Context, response *pkg.Response) (err err
 			CallBack: s.ParseDetail,
 		})
 		if e != nil {
-			s.Logger.Error(e)
+			s.logger.Error(e)
 			continue
 		}
 	}
@@ -70,7 +68,7 @@ func (s *Spider) ParseList(ctx context.Context, response *pkg.Response) (err err
 func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 
@@ -90,7 +88,7 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 	}
 	err = s.YieldItem(ctx, &item)
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return err
 	}
 
@@ -120,22 +118,22 @@ func (s *Spider) FromCategory(ctx context.Context, _ string) (err error) {
 	return
 }
 
-func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg.Spider, err error) {
+func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 	if baseSpider == nil {
 		err = errors.New("nil baseSpider")
-		logger.Error(err)
 		return
 	}
 
-	baseSpider.Name = "zdic"
-	baseSpider.Timeout = time.Minute
-	baseSpider.Interval = 200
-	baseSpider.RetryMaxTimes = 100
-	baseSpider.SetPipeline(new(pipelines.MongoPipeline), 141)
 	spider = &Spider{
-		BaseSpider:         baseSpider,
+		Spider:             baseSpider,
+		logger:             baseSpider.GetLogger(),
 		collectionZdicWord: "zdic_word",
 	}
+	spider.SetName("zdic")
+	spider.SetTimeout(time.Minute)
+	spider.SetInterval(200)
+	spider.SetRetryMaxTimes(100)
+	spider.SetPipeline(new(pipelines.MongoPipeline), 141)
 
 	return
 }

@@ -44,8 +44,8 @@ func (m *Middleware) ProcessResponse(_ context.Context, response *pkg.Response) 
 	return
 }
 
-func (m *Middleware) FromCrawler(spider pkg.Spider) pkg.Middleware {
-	m.logger = spider.GetLogger()
+func (m *Middleware) FromCrawler(crawler pkg.Crawler) pkg.Middleware {
+	m.logger = crawler.GetLogger()
 	m.urlSearch = "https://qxk.bnu.edu.cn/qxkapi/gjqxk/hanzi/search"
 	m.urlFind = "https://qxk.bnu.edu.cn/qxkapi/gjqxk/bishun/find?content=%s&zifujiId=49c12ccb-35cc-437b-af4a-3fe126df8fca"
 	m.aes, _ = utils.NewAes([]byte("crzjmwlcmgylxtyl"), utils.ECB)

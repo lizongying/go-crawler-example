@@ -189,5 +189,5 @@ run
 update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@e8aa95f
+go get -u github.com/lizongying/go-crawler@5cfe61b
 ```

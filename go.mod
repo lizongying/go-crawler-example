@@ -3,7 +3,7 @@ module github.com/lizongying/go-crawler-example
 go 1.20
 
 require (
-	github.com/lizongying/go-crawler v0.0.0-20230614103337-e8aa95f1065f
+	github.com/lizongying/go-crawler v0.0.0-20230616073708-5cfe61bf57a7
 	golang.org/x/text v0.9.0
 )
 

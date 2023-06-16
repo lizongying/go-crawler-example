@@ -31,8 +31,8 @@ func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (er
 	return
 }
 
-func (m *Middleware) FromCrawler(spider pkg.Spider) pkg.Middleware {
-	m.logger = spider.GetLogger()
+func (m *Middleware) FromCrawler(crawler pkg.Crawler) pkg.Middleware {
+	m.logger = crawler.GetLogger()
 	m.urlDetail = "https://baike.baidu.com/item/%s%s"
 	return m
 }

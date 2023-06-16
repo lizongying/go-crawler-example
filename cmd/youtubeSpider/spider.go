@@ -6,9 +6,7 @@ import (
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
-	"github.com/lizongying/go-crawler/pkg/logger"
 	"github.com/lizongying/go-crawler/pkg/pipelines"
-	"github.com/lizongying/go-crawler/pkg/spider"
 	"github.com/lizongying/go-crawler/pkg/utils"
 	"regexp"
 	"strconv"
@@ -17,8 +15,8 @@ import (
 )
 
 type Spider struct {
-	*spider.BaseSpider
-
+	pkg.Spider
+	logger                pkg.Logger
 	collectionYoutubeUser string
 
 	apiKey          string
@@ -33,7 +31,7 @@ type Spider struct {
 
 func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err error) {
 	extra := response.Request.Extra.(*ExtraSearch)
-	s.Logger.Info("Search", utils.JsonStr(extra))
+	s.logger.Info("Search", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -41,13 +39,13 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 	r := s.initialDataRe.FindSubmatch(response.BodyBytes)
 	if len(r) != 2 {
 		err = errors.New("not find content")
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 	var respSearch RespSearch
 	err = json.Unmarshal(r[1], &respSearch)
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 	token := ""
@@ -63,7 +61,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 
 				runs := v1.VideoRenderer.OwnerText.Runs
 				if len(runs) < 1 {
-					s.Logger.Error("runs err")
+					s.logger.Error("runs err")
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
@@ -79,7 +77,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 					CallBack: s.ParseVideos,
 				})
 				if e != nil {
-					s.Logger.Error(e)
+					s.logger.Error(e)
 					continue
 				}
 			}
@@ -89,14 +87,14 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 	r = s.apiKeyRe.FindSubmatch(response.BodyBytes)
 	if len(r) != 2 {
 		err = errors.New("not find api-key")
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 
 	s.apiKey = string(r[1])
 
 	if extra.MaxPage > 0 && extra.Page >= extra.MaxPage {
-		s.Logger.Info("max page")
+		s.logger.Info("max page")
 		return
 	}
 	err = s.YieldRequest(ctx, &pkg.Request{
@@ -111,7 +109,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 		CallBack: s.ParseSearchApi,
 	})
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 
@@ -120,7 +118,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 
 func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (err error) {
 	extra := response.Request.Extra.(*ExtraSearchApi)
-	s.Logger.Info("SearchApi", utils.JsonStr(extra))
+	s.logger.Info("SearchApi", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -128,7 +126,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 	var respSearch RespSearchApi
 	err = json.Unmarshal(response.BodyBytes, &respSearch)
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 
@@ -136,7 +134,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 	onResponseReceivedCommands := respSearch.OnResponseReceivedCommands
 	if len(onResponseReceivedCommands) < 1 {
 		err = errors.New("onResponseReceivedCommands err")
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 
@@ -152,7 +150,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 
 				runs := v1.VideoRenderer.OwnerText.Runs
 				if len(runs) < 1 {
-					s.Logger.Error("runs err")
+					s.logger.Error("runs err")
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
@@ -168,7 +166,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 					CallBack: s.ParseVideos,
 				})
 				if e != nil {
-					s.Logger.Error(e)
+					s.logger.Error(e)
 					continue
 				}
 			}
@@ -177,7 +175,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 
 	if token != "" {
 		if extra.MaxPage > 0 && extra.Page >= extra.MaxPage {
-			s.Logger.Info("max page")
+			s.logger.Info("max page")
 			return
 		}
 		err = s.YieldRequest(ctx, &pkg.Request{
@@ -192,7 +190,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 			CallBack: s.ParseSearchApi,
 		})
 		if err != nil {
-			s.Logger.Error(err)
+			s.logger.Error(err)
 			return
 		}
 	}
@@ -202,7 +200,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 
 func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err error) {
 	extra := response.Request.Extra.(*ExtraVideos)
-	s.Logger.Info("Videos", utils.JsonStr(extra))
+	s.logger.Info("Videos", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -210,13 +208,13 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 	r := s.initialDataRe.FindSubmatch(response.BodyBytes)
 	if len(r) != 2 {
 		err = errors.New("not find content")
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 	var respVideos RespVideos
 	err = json.Unmarshal(r[1], &respVideos)
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return
 	}
 
@@ -241,7 +239,7 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 			if viewCountText != "" && viewCountText != "No views" {
 				viewCountInt, e := strconv.Atoi(strings.Join(s.intRe.FindAllString(viewCountText, -1), ""))
 				if e != nil {
-					s.Logger.Error(e, "viewCount", viewCountText)
+					s.logger.Error(e, "viewCount", viewCountText)
 					continue
 				}
 				viewCount = viewCountInt
@@ -283,7 +281,7 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 		followersText := subscriber[0:index]
 		followers64, e := strconv.ParseFloat(strings.Join(s.floatRe.FindAllString(followersText, -1), ""), 64)
 		if e != nil {
-			s.Logger.Error(e, "followers64", subscriber)
+			s.logger.Error(e, "followers64", subscriber)
 		}
 		if strings.HasSuffix(followersText, "T") {
 			followers = int(followers64 * 1000 * 1000 * 1000 * 1000)
@@ -332,7 +330,7 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 	}
 	err = s.YieldItem(ctx, &item)
 	if err != nil {
-		s.Logger.Error(err)
+		s.logger.Error(err)
 		return err
 	}
 
@@ -369,19 +367,19 @@ func (s *Spider) FromKeyword(ctx context.Context, _ string) (err error) {
 	return
 }
 
-func NewSpider(baseSpider *spider.BaseSpider, logger *logger.Logger) (spider pkg.Spider, err error) {
+func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 	if baseSpider == nil {
 		err = errors.New("nil baseSpider")
-		logger.Error(err)
 		return
 	}
 
-	baseSpider.Name = "youtube"
-	baseSpider.Timeout = time.Second * 30
+	baseSpider.SetName("youtube")
+	baseSpider.SetTimeout(time.Second * 30)
 	baseSpider.SetMiddleware(new(Middleware), 9)
 	baseSpider.SetPipeline(new(pipelines.MongoPipeline), 141)
 	spider = &Spider{
-		BaseSpider:            baseSpider,
+		Spider:                baseSpider,
+		logger:                baseSpider.GetLogger(),
 		collectionYoutubeUser: "youtube_user",
 
 		apiKey:          "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",

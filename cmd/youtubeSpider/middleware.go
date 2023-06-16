@@ -46,8 +46,8 @@ func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (er
 	return
 }
 
-func (m *Middleware) FromCrawler(spider pkg.Spider) pkg.Middleware {
-	m.logger = spider.GetLogger()
+func (m *Middleware) FromCrawler(crawler pkg.Crawler) pkg.Middleware {
+	m.logger = crawler.GetLogger()
 	m.urlSearch = "https://www.youtube.com/results?search_query=%s"
 	m.urlSearchApi = "https://www.youtube.com/youtubei/v1/search?key=%s"
 	m.urlVideos = "https://www.youtube.com/@%s/videos"
