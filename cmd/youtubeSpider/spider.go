@@ -373,10 +373,6 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		return
 	}
 
-	baseSpider.SetName("youtube")
-	baseSpider.SetTimeout(time.Second * 30)
-	baseSpider.SetMiddleware(new(Middleware), 9)
-	baseSpider.SetPipeline(new(pipelines.MongoPipeline), 141)
 	spider = &Spider{
 		Spider:                baseSpider,
 		logger:                baseSpider.GetLogger(),
@@ -391,10 +387,15 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		intRe:           regexp.MustCompile(`\d`),
 		publishedTimeRe: regexp.MustCompile(`(\d+)\s*(year|month|week|day|hour|minute|second)`),
 	}
+	spider.SetName("youtube")
 
 	return
 }
 
 func main() {
-	app.NewApp(NewSpider).Run()
+	app.NewApp(NewSpider,
+		pkg.WithTimeout(time.Second*30),
+		pkg.WithMiddleware(new(Middleware), 9),
+		pkg.WithPipeline(new(pipelines.MongoPipeline), 11),
+	).Run()
 }

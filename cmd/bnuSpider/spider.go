@@ -128,18 +128,19 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		return
 	}
 
-	baseSpider.SetName("bnu")
-	baseSpider.SetMiddleware(new(Middleware), 9)
-	baseSpider.SetPipeline(new(pipelines.MongoPipeline), 141)
 	spider = &Spider{
 		Spider:            baseSpider,
 		logger:            baseSpider.GetLogger(),
 		collectionBnu8105: "bnu_8105",
 	}
+	spider.SetName("bnu")
 
 	return
 }
 
 func main() {
-	app.NewApp(NewSpider).Run()
+	app.NewApp(NewSpider,
+		pkg.WithMiddleware(new(Middleware), 9),
+		pkg.WithPipeline(new(pipelines.MongoPipeline), 11),
+	).Run()
 }

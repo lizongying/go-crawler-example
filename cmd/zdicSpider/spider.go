@@ -130,14 +130,15 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		collectionZdicWord: "zdic_word",
 	}
 	spider.SetName("zdic")
-	spider.SetTimeout(time.Minute)
-	spider.SetInterval(200)
-	spider.SetRetryMaxTimes(100)
-	spider.SetPipeline(new(pipelines.MongoPipeline), 141)
 
 	return
 }
 
 func main() {
-	app.NewApp(NewSpider).Run()
+	app.NewApp(NewSpider,
+		pkg.WithRetryMaxTimes(100),
+		pkg.WithInterval(time.Second),
+		pkg.WithTimeout(time.Minute),
+		pkg.WithPipeline(new(pipelines.MongoPipeline), 11),
+	).Run()
 }
