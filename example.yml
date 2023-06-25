@@ -8,6 +8,12 @@ mysql:
   example:
     uri: root@tcp(127.0.0.1:3306)
     database: crawler
+redis_enable: false
+redis:
+  example:
+    addr: 127.0.0.1:6379
+    password:
+    db: 0
 kafka_enable: false
 kafka:
   example:
@@ -27,4 +33,25 @@ request:
   retry_max_times: 10
   http_proto: 2.0
 dev_server: http://localhost:8081
+enable_ja3: false
+enable_stats_middleware: true
+enable_dump_middleware: true
+filter: memory
+enable_filter_middleware: true
+enable_image_middleware: true
+enable_http_middleware: true
+enable_retry_middleware: true
+enable_referer_middleware: true
 referrer_policy: NoReferrerPolicy
+enable_http_auth_middleware: true
+enable_cookie_middleware: true
+enable_url_middleware: true
+url_length_limit:
+enable_compress_middleware: true
+enable_decode_middleware: true
+enable_redirect_middleware: true
+redirect_max_times: 1
+enable_chrome_middleware: true
+enable_device_middleware: false
+enable_dump_pipeline: true
+enable_filter_pipeline: true
