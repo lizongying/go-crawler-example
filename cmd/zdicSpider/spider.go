@@ -139,6 +139,6 @@ func main() {
 		pkg.WithRetryMaxTimes(100),
 		pkg.WithInterval(time.Second),
 		pkg.WithTimeout(time.Minute),
-		pkg.WithPipeline(new(pipelines.MongoPipeline), 11),
+		pkg.WithPipeline(new(pipelines.MongoPipeline), 101),
 	).Run()
 }

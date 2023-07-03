@@ -18,6 +18,7 @@ type Spider struct {
 	pkg.Spider
 	logger                pkg.Logger
 	collectionYoutubeUser string
+	proxyEnable           bool
 
 	apiKey          string
 	initialDataRe   *regexp.Regexp
@@ -66,7 +67,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
 				e := s.YieldRequest(ctx, &pkg.Request{
-					ProxyEnable: true,
+					ProxyEnable: &s.proxyEnable,
 					UniqueKey:   id,
 					Extra: &ExtraVideos{
 						KeyWord:  extra.Keyword,
@@ -98,7 +99,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 		return
 	}
 	err = s.YieldRequest(ctx, &pkg.Request{
-		ProxyEnable: true,
+		ProxyEnable: &s.proxyEnable,
 		Extra: &ExtraSearchApi{
 			Keyword:       extra.Keyword,
 			Sp:            extra.Sp,
@@ -155,7 +156,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
 				e := s.YieldRequest(ctx, &pkg.Request{
-					ProxyEnable: true,
+					ProxyEnable: &s.proxyEnable,
 					UniqueKey:   id,
 					Extra: &ExtraVideos{
 						KeyWord:  extra.Keyword,
@@ -179,7 +180,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 			return
 		}
 		err = s.YieldRequest(ctx, &pkg.Request{
-			ProxyEnable: true,
+			ProxyEnable: &s.proxyEnable,
 			Extra: &ExtraSearchApi{
 				Keyword:       extra.Keyword,
 				Sp:            extra.Sp,
@@ -339,7 +340,7 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 
 func (s *Spider) Test(ctx context.Context, _ string) (err error) {
 	err = s.YieldRequest(ctx, &pkg.Request{
-		ProxyEnable: true,
+		ProxyEnable: &s.proxyEnable,
 		Extra: &ExtraVideos{
 			Id: "sierramarie",
 		},
@@ -353,7 +354,7 @@ func (s *Spider) FromKeyword(ctx context.Context, _ string) (err error) {
 		"veja",
 	} {
 		err = s.YieldRequest(ctx, &pkg.Request{
-			ProxyEnable: true,
+			ProxyEnable: &s.proxyEnable,
 			Extra: &ExtraSearch{
 				Keyword: v,
 				Sp:      Video,
@@ -377,6 +378,7 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		Spider:                baseSpider,
 		logger:                baseSpider.GetLogger(),
 		collectionYoutubeUser: "youtube_user",
+		proxyEnable:           true,
 
 		apiKey:          "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
 		initialDataRe:   regexp.MustCompile(`ytInitialData = (.+);</script>`),
@@ -396,6 +398,6 @@ func main() {
 	app.NewApp(NewSpider,
 		pkg.WithTimeout(time.Second*30),
 		pkg.WithMiddleware(new(Middleware), 9),
-		pkg.WithPipeline(new(pipelines.MongoPipeline), 11),
+		pkg.WithPipeline(new(pipelines.MongoPipeline), 101),
 	).Run()
 }
