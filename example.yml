@@ -1,4 +1,4 @@
-mongo_enable: true
+mongo_enable: false
 mongo:
   example:
     uri: mongodb://127.0.0.1:27017
@@ -8,12 +8,20 @@ mysql:
   example:
     uri: root@tcp(127.0.0.1:3306)
     database: crawler
-redis_enable: true
+redis_enable: false
 redis:
   example:
     addr: 127.0.0.1:6379
     password:
     db: 0
+s3_enable: false
+s3:
+  example:
+    endpoint:
+    region:
+    id:
+    key:
+    bucket: crawler
 kafka_enable: false
 kafka:
   example:
@@ -32,19 +40,20 @@ request:
     - 200
   retry_max_times: 10
   http_proto: 2.0
-dev_server: http://localhost:8081
+dev_server: https://localhost:8081
 enable_ja3: false
 enable_stats_middleware: true
 enable_dump_middleware: true
 scheduler: memory
 filter: memory
 enable_filter_middleware: true
+enable_file_middleware: true
 enable_image_middleware: true
 enable_http_middleware: true
 enable_retry_middleware: true
 enable_referer_middleware: true
 referrer_policy: NoReferrerPolicy
-enable_http_auth_middleware: true
+enable_http_auth_middleware: false
 enable_cookie_middleware: true
 enable_url_middleware: true
 url_length_limit:
@@ -54,6 +63,9 @@ enable_redirect_middleware: true
 redirect_max_times: 1
 enable_chrome_middleware: true
 enable_device_middleware: false
+enable_proxy_middleware: true
+enable_robots_txt_middleware: false
 enable_dump_pipeline: true
+enable_file_pipeline: true
 enable_image_pipeline: true
 enable_filter_pipeline: true
