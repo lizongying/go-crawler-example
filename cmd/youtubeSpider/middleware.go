@@ -21,26 +21,26 @@ type Middleware struct {
 }
 
 func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
-	_, ok := request.Extra.(*ExtraSearch)
-	if ok {
-		extra := request.Extra.(*ExtraSearch)
-		keyword := url.QueryEscape(extra.Keyword)
-		request.Url = fmt.Sprintf(m.urlSearch, keyword)
-		if extra.Sp == Video {
-			request.Url += fmt.Sprintf("&sp=%s", Video)
+	var extraSearch ExtraSearch
+	e := request.GetExtra(&extraSearch)
+	if e == nil {
+		keyword := url.QueryEscape(extraSearch.Keyword)
+		request.SetUrl(fmt.Sprintf(m.urlSearch, keyword))
+		if extraSearch.Sp == Video {
+			request.SetUrl(fmt.Sprintf(m.urlSearch, keyword) + fmt.Sprintf("&sp=%s", Video))
 		}
 	}
-	_, ok = request.Extra.(*ExtraSearchApi)
-	if ok {
-		extra := request.Extra.(*ExtraSearchApi)
+	var extraSearchApi ExtraSearchApi
+	e = request.GetExtra(&extraSearchApi)
+	if e == nil {
 		request.Method = "POST"
-		request.Url = fmt.Sprintf(m.urlSearchApi, m.apiKey)
-		request.BodyStr = fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"continuation":"%s"}`, extra.NextPageToken)
+		request.SetUrl(fmt.Sprintf(m.urlSearchApi, m.apiKey))
+		request.BodyStr = fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"continuation":"%s"}`, extraSearchApi.NextPageToken)
 	}
-	_, ok = request.Extra.(*ExtraVideos)
-	if ok {
-		extra := request.Extra.(*ExtraVideos)
-		request.Url = fmt.Sprintf(m.urlVideos, extra.Id)
+	var extraVideos ExtraVideos
+	e = request.GetExtra(&extraVideos)
+	if e == nil {
+		request.SetUrl(fmt.Sprintf(m.urlVideos, extraVideos.Id))
 	}
 	request.SetHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
 	return

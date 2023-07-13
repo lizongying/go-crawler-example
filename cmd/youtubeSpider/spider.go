@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
-	"github.com/lizongying/go-crawler/pkg/pipelines"
 	"github.com/lizongying/go-crawler/pkg/utils"
 	"regexp"
 	"strconv"
@@ -397,7 +396,7 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 func main() {
 	app.NewApp(NewSpider,
 		pkg.WithTimeout(time.Second*30),
-		pkg.WithMiddleware(new(Middleware), 9),
-		pkg.WithPipeline(new(pipelines.MongoPipeline), 101),
+		pkg.WithCustomMiddleware(new(Middleware)),
+		pkg.WithMongoPipeline(),
 	).Run()
 }

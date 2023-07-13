@@ -3,12 +3,13 @@ module github.com/lizongying/go-crawler-example
 go 1.20
 
 require (
-	github.com/lizongying/go-crawler v0.0.0-20230705091351-a2b4af175170
+	github.com/lizongying/go-crawler v0.0.0-20230713072732-1658d87ce410
 	golang.org/x/text v0.9.0
 )
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
+	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/antchfx/htmlquery v1.3.0 // indirect
 	github.com/antchfx/xpath v1.2.4 // indirect
@@ -26,10 +27,11 @@ require (
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/gaukas/godicttls v0.0.3 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/lizongying/go-query v0.0.0-20230426070941-98a11b3d6cf7 // indirect
 	github.com/lizongying/go-re v0.0.0-20230522044635-8e45e9501811 // indirect
 	github.com/lizongying/go-xpath v0.0.0-20230508033725-6786fb94ccc1 // indirect
@@ -37,7 +39,9 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/redis/go-redis/v9 v9.0.5 // indirect
+	github.com/refraction-networking/utls v1.3.2 // indirect
 	github.com/segmentio/kafka-go v0.4.40 // indirect
+	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
@@ -51,7 +55,7 @@ require (
 	go.uber.org/fx v1.19.2 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
+	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect

@@ -18,19 +18,19 @@ type Middleware struct {
 }
 
 func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
-	_, ok := request.Extra.(*ExtraFind)
-	if ok {
-		extra := request.Extra.(*ExtraFind)
-		request.Url = fmt.Sprintf(m.urlFind, extra.Bishun)
+	var extraFind ExtraFind
+	e := request.GetExtra(&extraFind)
+	if e == nil {
+		request.Url = fmt.Sprintf(m.urlFind, extraFind.Bishun)
 	}
-	_, ok = request.Extra.(*ExtraSearch)
-	if ok {
-		extra := request.Extra.(*ExtraSearch)
+	var extraSearch ExtraSearch
+	e = request.GetExtra(&extraSearch)
+	if e == nil {
 		request.Method = "POST"
-		request.Url = m.urlSearch
-		e, _ := m.aes.Encrypt([]byte(extra.Word))
+		request.SetUrl(m.urlSearch)
+		encryptedStr, _ := m.aes.Encrypt([]byte(extraSearch.Word))
 		b := fmt.Sprintf(`ziFuJiId=%s&jstjId=%s&content=%s`, url.QueryEscape("zEm7A9LuQRXiTpuujAASv5ZkY8o5AP8y4FDl5qAte9PfHuy7vpDo6e6AzRRCBEKm"), url.QueryEscape("WagkdUR2Niv2c+IxZAl5V2sIf1yADd9a+TvoJFx0sd1dWfwAszERW4dywPjrLMOF"),
-			url.QueryEscape(e),
+			url.QueryEscape(encryptedStr),
 		)
 		request.BodyStr = b
 		request.SetHeader("Content-Type", "application/x-www-form-urlencoded")

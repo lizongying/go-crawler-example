@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
-	"github.com/lizongying/go-crawler/pkg/pipelines"
 	"strings"
 	"time"
 )
@@ -139,6 +138,6 @@ func main() {
 		pkg.WithRetryMaxTimes(100),
 		pkg.WithInterval(time.Second),
 		pkg.WithTimeout(time.Minute),
-		pkg.WithPipeline(new(pipelines.MongoPipeline), 101),
+		pkg.WithMongoPipeline(),
 	).Run()
 }
