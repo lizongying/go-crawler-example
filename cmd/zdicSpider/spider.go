@@ -25,12 +25,9 @@ func (s *Spider) ParseCategory(ctx context.Context, response *pkg.Response) (err
 
 	items := x.FindStrMany(`//dt/a[@class="pck"]/@title`)
 	for _, v := range items {
-		e := s.YieldRequest(ctx, &pkg.Request{
-			Http: pkg.Http{
-				Url: fmt.Sprintf("https://www.zdic.net/zd/py/py/?py=%s", v),
-			},
-			CallBack: s.ParseList,
-		})
+		e := s.YieldRequest(ctx, new(pkg.Request).
+			SetUrl(fmt.Sprintf("https://www.zdic.net/zd/py/py/?py=%s", v)).
+			SetCallback(s.ParseList))
 		if e != nil {
 			s.logger.Error(e)
 			continue
@@ -49,12 +46,9 @@ func (s *Spider) ParseList(ctx context.Context, response *pkg.Response) (err err
 
 	items := x.FindStrMany(`//a/@href`)
 	for _, v := range items {
-		e := s.YieldRequest(ctx, &pkg.Request{
-			Http: pkg.Http{
-				Url: fmt.Sprintf("https://www.zdic.net%s", v),
-			},
-			CallBack: s.ParseDetail,
-		})
+		e := s.YieldRequest(ctx, new(pkg.Request).
+			SetUrl(fmt.Sprintf("https://www.zdic.net%s", v)).
+			SetCallback(s.ParseDetail))
 		if e != nil {
 			s.logger.Error(e)
 			continue
@@ -72,7 +66,7 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 	}
 
 	fan := x.FindStrOne(`//span[text()="繁体"]/../a/text()`)
-	id := response.Request.Url[strings.LastIndex(response.Request.Url, "/")+1:]
+	id := response.Request.GetUrl()[strings.LastIndex(response.Request.GetUrl(), "/")+1:]
 	data := DataWord{
 		Id:  id,
 		Fan: fan,
@@ -96,24 +90,17 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 
 // Test go run cmd/zdicSpider/* -c dev.yml -m prod
 func (s *Spider) Test(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, &pkg.Request{
-		Http: pkg.Http{
-			Url: fmt.Sprintf("https://www.zdic.net%s", "/hans/汉"),
-		},
-		CallBack: s.ParseDetail,
-	})
+	err = s.YieldRequest(ctx, new(pkg.Request).
+		SetUrl(fmt.Sprintf("https://www.zdic.net%s", "/hans/汉")).
+		SetCallback(s.ParseDetail))
 	return
 }
 
 // FromCategory go run cmd/zdicSpider/* -c dev.yml -f FromCategory -m prod
 func (s *Spider) FromCategory(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, &pkg.Request{
-		Http: pkg.Http{
-			Url: "https://www.zdic.net/zd/py/",
-		},
-		CallBack: s.ParseCategory,
-	})
-
+	err = s.YieldRequest(ctx, new(pkg.Request).
+		SetUrl("https://www.zdic.net/zd/py/").
+		SetCallback(s.ParseCategory))
 	return
 }
 

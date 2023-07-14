@@ -15,9 +15,14 @@ type Middleware struct {
 }
 
 func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
-	var extraDetail ExtraDetail
-	e := request.GetExtra(&extraDetail)
-	if e == nil {
+	switch request.GetExtraName() {
+	case "ExtraDetail":
+		var extraDetail ExtraDetail
+		err = request.GetExtra(&extraDetail)
+		if err != nil {
+			m.logger.Error(err)
+			return
+		}
 		keyword := extraDetail.Keyword
 		itemId := extraDetail.ItemId
 		if itemId != "" {

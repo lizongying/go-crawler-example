@@ -65,17 +65,16 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
-				e := s.YieldRequest(ctx, &pkg.Request{
-					ProxyEnable: &s.proxyEnable,
-					UniqueKey:   id,
-					Extra: &ExtraVideos{
+				e := s.YieldRequest(ctx, new(pkg.Request).
+					SetExtra(&ExtraVideos{
 						KeyWord:  extra.Keyword,
 						Id:       id,
 						Key:      runs[0].NavigationEndpoint.BrowseEndpoint.BrowseID,
 						UserName: runs[0].Text,
-					},
-					CallBack: s.ParseVideos,
-				})
+					}).
+					SetCallback(s.ParseVideos).
+					SetProxyEnable(&s.proxyEnable).
+					SetUniqueKey(id))
 				if e != nil {
 					s.logger.Error(e)
 					continue
@@ -97,17 +96,16 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 		s.logger.Info("max page")
 		return
 	}
-	err = s.YieldRequest(ctx, &pkg.Request{
-		ProxyEnable: &s.proxyEnable,
-		Extra: &ExtraSearchApi{
+	err = s.YieldRequest(ctx, new(pkg.Request).
+		SetExtra(&ExtraSearchApi{
 			Keyword:       extra.Keyword,
 			Sp:            extra.Sp,
 			Page:          extra.Page + 1,
 			MaxPage:       extra.MaxPage,
 			NextPageToken: token,
-		},
-		CallBack: s.ParseSearchApi,
-	})
+		}).
+		SetCallback(s.ParseSearchApi).
+		SetProxyEnable(&s.proxyEnable))
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -178,17 +176,16 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 			s.logger.Info("max page")
 			return
 		}
-		err = s.YieldRequest(ctx, &pkg.Request{
-			ProxyEnable: &s.proxyEnable,
-			Extra: &ExtraSearchApi{
+		err = s.YieldRequest(ctx, new(pkg.Request).
+			SetExtra(&ExtraSearchApi{
 				Keyword:       extra.Keyword,
 				Sp:            extra.Sp,
 				Page:          extra.Page + 1,
 				MaxPage:       extra.MaxPage,
 				NextPageToken: token,
-			},
-			CallBack: s.ParseSearchApi,
-		})
+			}).
+			SetCallback(s.ParseSearchApi).
+			SetProxyEnable(&s.proxyEnable))
 		if err != nil {
 			s.logger.Error(err)
 			return
@@ -338,13 +335,12 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 }
 
 func (s *Spider) Test(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, &pkg.Request{
-		ProxyEnable: &s.proxyEnable,
-		Extra: &ExtraVideos{
+	err = s.YieldRequest(ctx, new(pkg.Request).
+		SetExtra(&ExtraVideos{
 			Id: "sierramarie",
-		},
-		CallBack: s.ParseVideos,
-	})
+		}).
+		SetCallback(s.ParseVideos).
+		SetProxyEnable(&s.proxyEnable))
 	return
 }
 
@@ -352,16 +348,15 @@ func (s *Spider) FromKeyword(ctx context.Context, _ string) (err error) {
 	for _, v := range []string{
 		"veja",
 	} {
-		err = s.YieldRequest(ctx, &pkg.Request{
-			ProxyEnable: &s.proxyEnable,
-			Extra: &ExtraSearch{
+		err = s.YieldRequest(ctx, new(pkg.Request).
+			SetExtra(&ExtraSearch{
 				Keyword: v,
 				Sp:      Video,
 				Page:    1,
 				MaxPage: 2,
-			},
-			CallBack: s.ParseSearch,
-		})
+			}).
+			SetCallback(s.ParseSearch).
+			SetProxyEnable(&s.proxyEnable))
 	}
 
 	return

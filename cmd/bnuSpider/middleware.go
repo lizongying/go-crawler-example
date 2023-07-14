@@ -18,24 +18,33 @@ type Middleware struct {
 }
 
 func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
-	var extraFind ExtraFind
-	e := request.GetExtra(&extraFind)
-	if e == nil {
-		request.Url = fmt.Sprintf(m.urlFind, extraFind.Bishun)
-	}
-	var extraSearch ExtraSearch
-	e = request.GetExtra(&extraSearch)
-	if e == nil {
-		request.Method = "POST"
+	switch request.GetExtraName() {
+	case "ExtraFind":
+		var extraFind ExtraFind
+		err = request.GetExtra(&extraFind)
+		if err != nil {
+			m.logger.Error(err)
+			return
+		}
+		request.SetUrl(fmt.Sprintf(m.urlFind, extraFind.Bishun))
+	case "ExtraSearch":
+		var extraSearch ExtraSearch
+		err = request.GetExtra(&extraSearch)
+		if err != nil {
+			m.logger.Error(err)
+			return
+		}
+		request.SetMethod("POST")
 		request.SetUrl(m.urlSearch)
 		encryptedStr, _ := m.aes.Encrypt([]byte(extraSearch.Word))
 		b := fmt.Sprintf(`ziFuJiId=%s&jstjId=%s&content=%s`, url.QueryEscape("zEm7A9LuQRXiTpuujAASv5ZkY8o5AP8y4FDl5qAte9PfHuy7vpDo6e6AzRRCBEKm"), url.QueryEscape("WagkdUR2Niv2c+IxZAl5V2sIf1yADd9a+TvoJFx0sd1dWfwAszERW4dywPjrLMOF"),
 			url.QueryEscape(encryptedStr),
 		)
-		request.BodyStr = b
+		request.SetBody(b)
 		request.SetHeader("Content-Type", "application/x-www-form-urlencoded")
 		request.SetHeader("Accept", "application/json, text/plain, */*")
 	}
+
 	return
 }
 

@@ -16,7 +16,12 @@ type Spider struct {
 
 func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err error) {
 	s.logger.Info(response.Request.Request.Header)
-	extra := response.Request.Extra.(*ExtraDetail)
+	var extra ExtraDetail
+	err = response.Request.GetExtra(&extra)
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
 	s.logger.Info("Detail", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
@@ -55,13 +60,11 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 
 // Test go run cmd/baiduBaikeSpider/* -c dev.yml -m prod
 func (s *Spider) Test(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, &pkg.Request{
-		Extra: &ExtraDetail{
+	err = s.YieldRequest(ctx, new(pkg.Request).
+		SetExtra(&ExtraDetail{
 			Keyword: "动物传染病",
-		},
-		CallBack: s.ParseDetail,
-		//ProxyEnable: true,
-	})
+		}).
+		SetCallback(s.ParseDetail))
 	return
 }
 
