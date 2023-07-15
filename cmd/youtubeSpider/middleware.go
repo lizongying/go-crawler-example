@@ -20,11 +20,11 @@ type Middleware struct {
 	apiKey string
 }
 
-func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
+func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err error) {
 	switch request.GetExtraName() {
 	case "ExtraSearch":
 		var extraSearch ExtraSearch
-		err = request.GetExtra(&extraSearch)
+		err = request.UnmarshalExtra(&extraSearch)
 		if err != nil {
 			m.logger.Error(err)
 			return
@@ -36,7 +36,7 @@ func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (er
 		}
 	case "ExtraSearchApi":
 		var extraSearchApi ExtraSearchApi
-		err = request.GetExtra(&extraSearchApi)
+		err = request.UnmarshalExtra(&extraSearchApi)
 		if err != nil {
 			m.logger.Error(err)
 			return
@@ -46,7 +46,7 @@ func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (er
 		request.SetBody(fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"continuation":"%s"}`, extraSearchApi.NextPageToken))
 	case "ExtraVideos":
 		var extraVideos ExtraVideos
-		err = request.GetExtra(&extraVideos)
+		err = request.UnmarshalExtra(&extraVideos)
 		if err != nil {
 			m.logger.Error(err)
 			return

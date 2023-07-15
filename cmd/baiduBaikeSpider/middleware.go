@@ -14,11 +14,11 @@ type Middleware struct {
 	urlDetail string
 }
 
-func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
+func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err error) {
 	switch request.GetExtraName() {
 	case "ExtraDetail":
 		var extraDetail ExtraDetail
-		err = request.GetExtra(&extraDetail)
+		err = request.UnmarshalExtra(&extraDetail)
 		if err != nil {
 			m.logger.Error(err)
 			return

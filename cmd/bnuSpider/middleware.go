@@ -17,11 +17,11 @@ type Middleware struct {
 	aes       *utils.Aes
 }
 
-func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (err error) {
+func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err error) {
 	switch request.GetExtraName() {
 	case "ExtraFind":
 		var extraFind ExtraFind
-		err = request.GetExtra(&extraFind)
+		err = request.UnmarshalExtra(&extraFind)
 		if err != nil {
 			m.logger.Error(err)
 			return
@@ -29,7 +29,7 @@ func (m *Middleware) ProcessRequest(_ context.Context, request *pkg.Request) (er
 		request.SetUrl(fmt.Sprintf(m.urlFind, extraFind.Bishun))
 	case "ExtraSearch":
 		var extraSearch ExtraSearch
-		err = request.GetExtra(&extraSearch)
+		err = request.UnmarshalExtra(&extraSearch)
 		if err != nil {
 			m.logger.Error(err)
 			return

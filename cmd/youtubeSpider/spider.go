@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
+	"github.com/lizongying/go-crawler/pkg/request"
 	"github.com/lizongying/go-crawler/pkg/utils"
 	"regexp"
 	"strconv"
@@ -30,7 +31,12 @@ type Spider struct {
 }
 
 func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err error) {
-	extra := response.Request.Extra.(*ExtraSearch)
+	var extra ExtraSearch
+	err = response.Request.UnmarshalExtra(&extra)
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
 	s.logger.Info("Search", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
@@ -65,14 +71,14 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
-				e := s.YieldRequest(ctx, new(pkg.Request).
+				e := s.YieldRequest(ctx, request.NewRequest().
 					SetExtra(&ExtraVideos{
 						KeyWord:  extra.Keyword,
 						Id:       id,
 						Key:      runs[0].NavigationEndpoint.BrowseEndpoint.BrowseID,
 						UserName: runs[0].Text,
 					}).
-					SetCallback(s.ParseVideos).
+					SetCallBack(s.ParseVideos).
 					SetProxyEnable(&s.proxyEnable).
 					SetUniqueKey(id))
 				if e != nil {
@@ -96,7 +102,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 		s.logger.Info("max page")
 		return
 	}
-	err = s.YieldRequest(ctx, new(pkg.Request).
+	err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraSearchApi{
 			Keyword:       extra.Keyword,
 			Sp:            extra.Sp,
@@ -104,7 +110,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 			MaxPage:       extra.MaxPage,
 			NextPageToken: token,
 		}).
-		SetCallback(s.ParseSearchApi).
+		SetCallBack(s.ParseSearchApi).
 		SetProxyEnable(&s.proxyEnable))
 	if err != nil {
 		s.logger.Error(err)
@@ -115,7 +121,12 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 }
 
 func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (err error) {
-	extra := response.Request.Extra.(*ExtraSearchApi)
+	var extra ExtraSearchApi
+	err = response.Request.UnmarshalExtra(&extra)
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
 	s.logger.Info("SearchApi", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
@@ -152,17 +163,16 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 					continue
 				}
 				id := strings.TrimPrefix(runs[0].NavigationEndpoint.BrowseEndpoint.CanonicalBaseURL, "/@")
-				e := s.YieldRequest(ctx, &pkg.Request{
-					ProxyEnable: &s.proxyEnable,
-					UniqueKey:   id,
-					Extra: &ExtraVideos{
+				e := s.YieldRequest(ctx, request.NewRequest().
+					SetExtra(&ExtraVideos{
 						KeyWord:  extra.Keyword,
 						Id:       id,
 						Key:      runs[0].NavigationEndpoint.BrowseEndpoint.BrowseID,
 						UserName: runs[0].Text,
-					},
-					CallBack: s.ParseVideos,
-				})
+					}).
+					SetCallBack(s.ParseVideos).
+					SetUniqueKey(id).
+					SetProxyEnable(&s.proxyEnable))
 				if e != nil {
 					s.logger.Error(e)
 					continue
@@ -176,7 +186,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 			s.logger.Info("max page")
 			return
 		}
-		err = s.YieldRequest(ctx, new(pkg.Request).
+		err = s.YieldRequest(ctx, request.NewRequest().
 			SetExtra(&ExtraSearchApi{
 				Keyword:       extra.Keyword,
 				Sp:            extra.Sp,
@@ -184,7 +194,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 				MaxPage:       extra.MaxPage,
 				NextPageToken: token,
 			}).
-			SetCallback(s.ParseSearchApi).
+			SetCallBack(s.ParseSearchApi).
 			SetProxyEnable(&s.proxyEnable))
 		if err != nil {
 			s.logger.Error(err)
@@ -196,7 +206,12 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 }
 
 func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err error) {
-	extra := response.Request.Extra.(*ExtraVideos)
+	var extra ExtraVideos
+	err = response.Request.UnmarshalExtra(&extra)
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
 	s.logger.Info("Videos", utils.JsonStr(extra))
 	if ctx == nil {
 		ctx = context.Background()
@@ -328,19 +343,24 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 	err = s.YieldItem(ctx, &item)
 	if err != nil {
 		s.logger.Error(err)
-		return err
+		return
 	}
 
 	return
 }
 
 func (s *Spider) Test(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, new(pkg.Request).
+	err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraVideos{
 			Id: "sierramarie",
 		}).
-		SetCallback(s.ParseVideos).
+		SetCallBack(s.ParseVideos).
 		SetProxyEnable(&s.proxyEnable))
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
+
 	return
 }
 
@@ -348,15 +368,18 @@ func (s *Spider) FromKeyword(ctx context.Context, _ string) (err error) {
 	for _, v := range []string{
 		"veja",
 	} {
-		err = s.YieldRequest(ctx, new(pkg.Request).
+		e := s.YieldRequest(ctx, request.NewRequest().
 			SetExtra(&ExtraSearch{
 				Keyword: v,
 				Sp:      Video,
 				Page:    1,
 				MaxPage: 2,
 			}).
-			SetCallback(s.ParseSearch).
+			SetCallBack(s.ParseSearch).
 			SetProxyEnable(&s.proxyEnable))
+		if e != nil {
+			s.logger.Error(e)
+		}
 	}
 
 	return

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
+	"github.com/lizongying/go-crawler/pkg/request"
 	"github.com/lizongying/go-crawler/pkg/utils"
 )
 
@@ -16,11 +17,13 @@ type Spider struct {
 }
 
 func (s *Spider) ParseFind(ctx context.Context, response *pkg.Response) (err error) {
-	extra := response.Request.Extra.(*ExtraFind)
-	s.logger.Info("Find", utils.JsonStr(extra))
-	if ctx == nil {
-		ctx = context.Background()
+	var extra ExtraFind
+	err = response.Request.UnmarshalExtra(&extra)
+	if err != nil {
+		s.logger.Error(err)
+		return
 	}
+	s.logger.Info("Find", utils.JsonStr(extra))
 
 	var respFind RespFind
 	err = json.Unmarshal(response.BodyBytes, &respFind)
@@ -31,15 +34,14 @@ func (s *Spider) ParseFind(ctx context.Context, response *pkg.Response) (err err
 
 	for _, v := range respFind.Data.List {
 		for _, v1 := range v.Data {
-			e := s.YieldRequest(ctx, new(pkg.Request).
+			e := s.YieldRequest(ctx, request.NewRequest().
 				SetExtra(&ExtraSearch{
 					Word: v1.Hanzi,
 				}).
-				SetCallback(s.ParseSearch).
+				SetCallBack(s.ParseSearch).
 				SetUniqueKey(v1.Hanzi))
 			if e != nil {
 				s.logger.Error(e)
-				continue
 			}
 		}
 	}
@@ -48,11 +50,13 @@ func (s *Spider) ParseFind(ctx context.Context, response *pkg.Response) (err err
 }
 
 func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err error) {
-	extra := response.Request.Extra.(*ExtraSearch)
-	s.logger.Info("Search", utils.JsonStr(extra))
-	if ctx == nil {
-		ctx = context.Background()
+	var extra ExtraSearch
+	err = response.Request.UnmarshalExtra(&extra)
+	if err != nil {
+		s.logger.Error(err)
+		return
 	}
+	s.logger.Info("Search", utils.JsonStr(extra))
 
 	var respSearch RespSearch
 	err = json.Unmarshal(response.BodyBytes, &respSearch)
@@ -83,7 +87,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 	err = s.YieldItem(ctx, &item)
 	if err != nil {
 		s.logger.Error(err)
-		return err
+		return
 	}
 
 	return
@@ -91,11 +95,16 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 
 // Test go run cmd/bnuSpider/* -c dev.yml -m prod
 func (s *Spider) Test(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, new(pkg.Request).
+	err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraSearch{
 			Word: "丰",
 		}).
-		SetCallback(s.ParseSearch))
+		SetCallBack(s.ParseSearch))
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
+
 	return
 }
 
@@ -108,11 +117,14 @@ func (s *Spider) FromFind(ctx context.Context, _ string) (err error) {
 		//"4",
 		//"5",
 	} {
-		err = s.YieldRequest(ctx, new(pkg.Request).
+		e := s.YieldRequest(ctx, request.NewRequest().
 			SetExtra(&ExtraFind{
 				Bishun: v,
 			}).
-			SetCallback(s.ParseFind))
+			SetCallBack(s.ParseFind))
+		if e != nil {
+			s.logger.Error(e)
+		}
 	}
 
 	return

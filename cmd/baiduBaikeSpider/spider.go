@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
+	"github.com/lizongying/go-crawler/pkg/request"
 	"github.com/lizongying/go-crawler/pkg/utils"
 )
 
@@ -15,17 +16,13 @@ type Spider struct {
 }
 
 func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err error) {
-	s.logger.Info(response.Request.Request.Header)
 	var extra ExtraDetail
-	err = response.Request.GetExtra(&extra)
+	err = response.Request.UnmarshalExtra(&extra)
 	if err != nil {
 		s.logger.Error(err)
 		return
 	}
 	s.logger.Info("Detail", utils.JsonStr(extra))
-	if ctx == nil {
-		ctx = context.Background()
-	}
 
 	x, err := response.Xpath()
 	if err != nil {
@@ -52,7 +49,7 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 	err = s.YieldItem(ctx, &item)
 	if err != nil {
 		s.logger.Error(err)
-		return err
+		return
 	}
 
 	return
@@ -60,11 +57,16 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 
 // Test go run cmd/baiduBaikeSpider/* -c dev.yml -m prod
 func (s *Spider) Test(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, new(pkg.Request).
+	err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraDetail{
 			Keyword: "动物传染病",
 		}).
-		SetCallback(s.ParseDetail))
+		SetCallBack(s.ParseDetail))
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
+
 	return
 }
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
+	"github.com/lizongying/go-crawler/pkg/request"
 	"strings"
 	"time"
 )
@@ -25,9 +26,9 @@ func (s *Spider) ParseCategory(ctx context.Context, response *pkg.Response) (err
 
 	items := x.FindStrMany(`//dt/a[@class="pck"]/@title`)
 	for _, v := range items {
-		e := s.YieldRequest(ctx, new(pkg.Request).
+		e := s.YieldRequest(ctx, request.NewRequest().
 			SetUrl(fmt.Sprintf("https://www.zdic.net/zd/py/py/?py=%s", v)).
-			SetCallback(s.ParseList))
+			SetCallBack(s.ParseList))
 		if e != nil {
 			s.logger.Error(e)
 			continue
@@ -46,9 +47,9 @@ func (s *Spider) ParseList(ctx context.Context, response *pkg.Response) (err err
 
 	items := x.FindStrMany(`//a/@href`)
 	for _, v := range items {
-		e := s.YieldRequest(ctx, new(pkg.Request).
+		e := s.YieldRequest(ctx, request.NewRequest().
 			SetUrl(fmt.Sprintf("https://www.zdic.net%s", v)).
-			SetCallback(s.ParseDetail))
+			SetCallBack(s.ParseDetail))
 		if e != nil {
 			s.logger.Error(e)
 			continue
@@ -82,7 +83,7 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 	err = s.YieldItem(ctx, &item)
 	if err != nil {
 		s.logger.Error(err)
-		return err
+		return
 	}
 
 	return
@@ -90,17 +91,27 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 
 // Test go run cmd/zdicSpider/* -c dev.yml -m prod
 func (s *Spider) Test(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, new(pkg.Request).
+	err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl(fmt.Sprintf("https://www.zdic.net%s", "/hans/汉")).
-		SetCallback(s.ParseDetail))
+		SetCallBack(s.ParseDetail))
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
+
 	return
 }
 
 // FromCategory go run cmd/zdicSpider/* -c dev.yml -f FromCategory -m prod
 func (s *Spider) FromCategory(ctx context.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, new(pkg.Request).
+	err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl("https://www.zdic.net/zd/py/").
-		SetCallback(s.ParseCategory))
+		SetCallBack(s.ParseCategory))
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
+
 	return
 }
 
