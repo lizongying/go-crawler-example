@@ -48,8 +48,14 @@ func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err
 	return
 }
 
-func (m *Middleware) ProcessResponse(_ context.Context, response *pkg.Response) (err error) {
-	response.BodyBytes, _ = m.aes.Decrypt(string(response.BodyBytes))
+func (m *Middleware) ProcessResponse(_ context.Context, response pkg.Response) (err error) {
+	var bodyBytes []byte
+	bodyBytes, err = m.aes.Decrypt(string(response.GetBodyBytes()))
+	if err != nil {
+		m.logger.Error(err)
+		return
+	}
+	response.SetBodyBytes(bodyBytes)
 	return
 }
 

@@ -15,9 +15,9 @@ type Spider struct {
 	collectionBaiduBaike string
 }
 
-func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseDetail(ctx context.Context, response pkg.Response) (err error) {
 	var extra ExtraDetail
-	err = response.Request.UnmarshalExtra(&extra)
+	err = response.UnmarshalExtra(&extra)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -31,7 +31,7 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 	}
 
 	content := x.FindNodeOne("//div[contains(@class, 'J-content')]").FindStrOne("string(.)")
-	s.logger.Info(string(response.BodyBytes))
+	s.logger.Info(string(response.GetBodyBytes()))
 	data := DataWord{
 		Id:      extra.Keyword,
 		Keyword: extra.Keyword,

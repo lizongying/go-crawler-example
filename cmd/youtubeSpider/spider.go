@@ -30,9 +30,9 @@ type Spider struct {
 	publishedTimeRe *regexp.Regexp
 }
 
-func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err error) {
 	var extra ExtraSearch
-	err = response.Request.UnmarshalExtra(&extra)
+	err = response.UnmarshalExtra(&extra)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -42,7 +42,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 		ctx = context.Background()
 	}
 
-	r := s.initialDataRe.FindSubmatch(response.BodyBytes)
+	r := s.initialDataRe.FindSubmatch(response.GetBodyBytes())
 	if len(r) != 2 {
 		err = errors.New("not find content")
 		s.logger.Error(err)
@@ -89,7 +89,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 		}
 	}
 
-	r = s.apiKeyRe.FindSubmatch(response.BodyBytes)
+	r = s.apiKeyRe.FindSubmatch(response.GetBodyBytes())
 	if len(r) != 2 {
 		err = errors.New("not find api-key")
 		s.logger.Error(err)
@@ -120,9 +120,9 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 	return
 }
 
-func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseSearchApi(ctx context.Context, response pkg.Response) (err error) {
 	var extra ExtraSearchApi
-	err = response.Request.UnmarshalExtra(&extra)
+	err = response.UnmarshalExtra(&extra)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -133,7 +133,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 	}
 
 	var respSearch RespSearchApi
-	err = json.Unmarshal(response.BodyBytes, &respSearch)
+	err = json.Unmarshal(response.GetBodyBytes(), &respSearch)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -205,9 +205,9 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response *pkg.Response) (er
 	return
 }
 
-func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseVideos(ctx context.Context, response pkg.Response) (err error) {
 	var extra ExtraVideos
-	err = response.Request.UnmarshalExtra(&extra)
+	err = response.UnmarshalExtra(&extra)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -217,7 +217,7 @@ func (s *Spider) ParseVideos(ctx context.Context, response *pkg.Response) (err e
 		ctx = context.Background()
 	}
 
-	r := s.initialDataRe.FindSubmatch(response.BodyBytes)
+	r := s.initialDataRe.FindSubmatch(response.GetBodyBytes())
 	if len(r) != 2 {
 		err = errors.New("not find content")
 		s.logger.Error(err)

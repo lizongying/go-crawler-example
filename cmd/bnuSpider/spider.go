@@ -16,9 +16,9 @@ type Spider struct {
 	collectionBnu8105 string
 }
 
-func (s *Spider) ParseFind(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseFind(ctx context.Context, response pkg.Response) (err error) {
 	var extra ExtraFind
-	err = response.Request.UnmarshalExtra(&extra)
+	err = response.UnmarshalExtra(&extra)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -26,7 +26,7 @@ func (s *Spider) ParseFind(ctx context.Context, response *pkg.Response) (err err
 	s.logger.Info("Find", utils.JsonStr(extra))
 
 	var respFind RespFind
-	err = json.Unmarshal(response.BodyBytes, &respFind)
+	err = json.Unmarshal(response.GetBodyBytes(), &respFind)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -49,9 +49,9 @@ func (s *Spider) ParseFind(ctx context.Context, response *pkg.Response) (err err
 	return
 }
 
-func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err error) {
 	var extra ExtraSearch
-	err = response.Request.UnmarshalExtra(&extra)
+	err = response.UnmarshalExtra(&extra)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -59,7 +59,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response *pkg.Response) (err e
 	s.logger.Info("Search", utils.JsonStr(extra))
 
 	var respSearch RespSearch
-	err = json.Unmarshal(response.BodyBytes, &respSearch)
+	err = json.Unmarshal(response.GetBodyBytes(), &respSearch)
 	if err != nil {
 		s.logger.Error(err)
 		return

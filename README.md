@@ -405,5 +405,5 @@ make
 ### update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@9baba38
+go get -u github.com/lizongying/go-crawler@2381f9a
 ```

@@ -17,7 +17,7 @@ type Spider struct {
 	collectionZdicWord string
 }
 
-func (s *Spider) ParseCategory(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseCategory(ctx context.Context, response pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
 		s.logger.Error(err)
@@ -38,7 +38,7 @@ func (s *Spider) ParseCategory(ctx context.Context, response *pkg.Response) (err
 	return
 }
 
-func (s *Spider) ParseList(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseList(ctx context.Context, response pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
 		s.logger.Error(err)
@@ -59,7 +59,7 @@ func (s *Spider) ParseList(ctx context.Context, response *pkg.Response) (err err
 	return
 }
 
-func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err error) {
+func (s *Spider) ParseDetail(ctx context.Context, response pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
 		s.logger.Error(err)
@@ -67,7 +67,7 @@ func (s *Spider) ParseDetail(ctx context.Context, response *pkg.Response) (err e
 	}
 
 	fan := x.FindStrOne(`//span[text()="繁体"]/../a/text()`)
-	id := response.Request.GetUrl()[strings.LastIndex(response.Request.GetUrl(), "/")+1:]
+	id := response.GetUrl()[strings.LastIndex(response.GetUrl(), "/")+1:]
 	data := DataWord{
 		Id:  id,
 		Fan: fan,
