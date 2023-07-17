@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
+	"github.com/lizongying/go-crawler/pkg/items"
 	"github.com/lizongying/go-crawler/pkg/request"
 	"strings"
 	"time"
@@ -72,15 +73,9 @@ func (s *Spider) ParseDetail(ctx context.Context, response pkg.Response) (err er
 		Id:  id,
 		Fan: fan,
 	}
-	item := pkg.ItemMongo{
-		Update:     true,
-		Collection: s.collectionZdicWord,
-		ItemUnimplemented: pkg.ItemUnimplemented{
-			Id:   id,
-			Data: &data,
-		},
-	}
-	err = s.YieldItem(ctx, &item)
+	err = s.YieldItem(ctx, items.NewItemMongo(s.collectionZdicWord, true).
+		SetId(id).
+		SetData(&data))
 	if err != nil {
 		s.logger.Error(err)
 		return

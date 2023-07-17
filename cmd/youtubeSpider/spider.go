@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
+	"github.com/lizongying/go-crawler/pkg/items"
 	"github.com/lizongying/go-crawler/pkg/request"
 	"github.com/lizongying/go-crawler/pkg/utils"
 	"regexp"
@@ -331,16 +332,10 @@ func (s *Spider) ParseVideos(ctx context.Context, response pkg.Response) (err er
 		ViewAvg:     viewAvg,
 		Keyword:     extra.KeyWord,
 	}
-	item := pkg.ItemMongo{
-		Update:     true,
-		Collection: s.collectionYoutubeUser,
-		ItemUnimplemented: pkg.ItemUnimplemented{
-			UniqueKey: extra.Id,
-			Id:        extra.Id,
-			Data:      &data,
-		},
-	}
-	err = s.YieldItem(ctx, &item)
+	err = s.YieldItem(ctx, items.NewItemMongo(s.collectionYoutubeUser, true).
+		SetUniqueKey(extra.Id).
+		SetId(extra.Id).
+		SetData(&data))
 	if err != nil {
 		s.logger.Error(err)
 		return

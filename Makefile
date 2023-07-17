@@ -1,8 +1,11 @@
 .PHONY: all
 
-all: tidy bnuSpider youtubeSpider zdicSpider
+all: shell tidy bnuSpider youtubeSpider zdicSpider
 
 module := github.com/lizongying/go-crawler
+
+shell:
+	@echo 'SHELL='$(SHELL)
 
 tidy:
 	go mod tidy
