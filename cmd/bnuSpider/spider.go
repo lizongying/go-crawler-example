@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
@@ -27,7 +26,7 @@ func (s *Spider) ParseFind(ctx context.Context, response pkg.Response) (err erro
 	s.logger.Info("Find", utils.JsonStr(extra))
 
 	var respFind RespFind
-	err = json.Unmarshal(response.GetBodyBytes(), &respFind)
+	err = response.UnmarshalBody(&respFind)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -60,7 +59,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err er
 	s.logger.Info("Search", utils.JsonStr(extra))
 
 	var respSearch RespSearch
-	err = json.Unmarshal(response.GetBodyBytes(), &respSearch)
+	err = response.UnmarshalBody(&respSearch)
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -76,6 +75,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err er
 		ZfjID:     respSearch.Data.ZfjID,
 		Zfj:       respSearch.Data.Zfj,
 	}
+
 	err = s.YieldItem(ctx, items.NewItemMongo(s.collectionBnu8105, true).
 		SetUniqueKey(extra.Word).
 		SetId(respSearch.Data.Hanzi.ID).

@@ -134,7 +134,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response pkg.Response) (err
 	}
 
 	var respSearch RespSearchApi
-	err = json.Unmarshal(response.GetBodyBytes(), &respSearch)
+	err = response.UnmarshalBody(&respSearch)
 	if err != nil {
 		s.logger.Error(err)
 		return
