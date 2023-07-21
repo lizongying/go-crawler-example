@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: shell tidy bnuSpider youtubeSpider zdicSpider
+all: shell tidy baiduBaikeSpider bnuSpider youtubeSpider zdicSpider
 
 module := github.com/lizongying/go-crawler
 
@@ -9,6 +9,10 @@ shell:
 
 tidy:
 	go mod tidy
+
+baiduBaikeSpider:
+	go vet ./cmd/baiduBaikeSpider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=baiduBaike" -o ./releases/baiduBaikeSpider ./cmd/baiduBaikeSpider
 
 bnuSpider:
 	go vet ./cmd/bnuSpider

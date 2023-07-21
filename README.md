@@ -5,6 +5,16 @@ go-crawler的爬虫示例。
 [go-crawler-example](https://github.com/lizongying/go-crawler-example)
 [go-crawler](https://github.com/lizongying/go-crawler)
 
+## Feature
+
+* 编写简单，性能强劲。
+* 内置多种实用中间件，开发起来更轻松。
+* 支持多种解析方式，解析页面更简单。
+* 支持多种保存方式，数据存储更灵活。
+* 提供了丰富的配置选项，配置更自由。
+* 组件支持自定义，扩展功能更简单。
+* 内置开发服务，调试开发更方便。
+
 ## Usage
 
 * 基本架构
@@ -425,7 +435,7 @@ go-crawler的爬虫示例。
 * enable_compress_middleware: 是否开启响应解压缩中间件（gzip、deflate），默认启用。
 * enable_decode_middleware: 是否开启中文解码中间件（GBK、GB2312、Big5编码），默认启用。
 * enable_redirect_middleware: 是否开启重定向中间件，默认启用。
-* redirect_max_times: 重定向的最大次数，默认1。
+* redirect_max_times: 重定向的最大次数，默认10。
 * enable_chrome_middleware: 是否开启Chrome模拟中间件，默认启用。
 * enable_device_middleware: 是否开启设备模拟中间件，默认关闭。
 * enable_proxy_middleware: 是否开启代理中间件，默认启用。
@@ -463,5 +473,15 @@ make
 ### update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@113fd5d
+go get -u github.com/lizongying/go-crawler@7c5e350
+```
+
+## Docker build
+
+```shell
+docker build -f ./cmd/testSpider/Dockerfile -t go-crawler/baidu-baike-spider:latest . 
+```
+
+```shell
+docker run -d go-crawler/baidu-baike-spider:latest spider -c example.yml -f Test -m dev
 ```

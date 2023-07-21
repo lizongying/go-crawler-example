@@ -3,7 +3,7 @@ module github.com/lizongying/go-crawler-example
 go 1.20
 
 require (
-	github.com/lizongying/go-crawler v0.0.2-0.20230719094736-113fd5d08864
+	github.com/lizongying/go-crawler v0.0.2-0.20230721090648-7c5e350e7e19
 	golang.org/x/text v0.9.0
 )
 
@@ -32,7 +32,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.15.15 // indirect
-	github.com/lizongying/go-query v0.0.0-20230426070941-98a11b3d6cf7 // indirect
+	github.com/lizongying/go-query v0.0.0-20230720084938-e0776701ba5f // indirect
 	github.com/lizongying/go-re v0.0.0-20230522044635-8e45e9501811 // indirect
 	github.com/lizongying/go-xpath v0.0.0-20230508033725-6786fb94ccc1 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
