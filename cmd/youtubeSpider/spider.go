@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
@@ -31,7 +30,7 @@ type Spider struct {
 	publishedTimeRe *regexp.Regexp
 }
 
-func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseSearch(ctx pkg.Context, response pkg.Response) (err error) {
 	var extra ExtraSearch
 	err = response.UnmarshalExtra(&extra)
 	if err != nil {
@@ -39,9 +38,6 @@ func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err er
 		return
 	}
 	s.logger.Info("Search", utils.JsonStr(extra))
-	if ctx == nil {
-		ctx = context.Background()
-	}
 
 	r := s.initialDataRe.FindSubmatch(response.GetBodyBytes())
 	if len(r) != 2 {
@@ -121,7 +117,7 @@ func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err er
 	return
 }
 
-func (s *Spider) ParseSearchApi(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseSearchApi(ctx pkg.Context, response pkg.Response) (err error) {
 	var extra ExtraSearchApi
 	err = response.UnmarshalExtra(&extra)
 	if err != nil {
@@ -129,9 +125,6 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response pkg.Response) (err
 		return
 	}
 	s.logger.Info("SearchApi", utils.JsonStr(extra))
-	if ctx == nil {
-		ctx = context.Background()
-	}
 
 	var respSearch RespSearchApi
 	err = response.UnmarshalBody(&respSearch)
@@ -206,7 +199,7 @@ func (s *Spider) ParseSearchApi(ctx context.Context, response pkg.Response) (err
 	return
 }
 
-func (s *Spider) ParseVideos(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseVideos(ctx pkg.Context, response pkg.Response) (err error) {
 	var extra ExtraVideos
 	err = response.UnmarshalExtra(&extra)
 	if err != nil {
@@ -214,9 +207,6 @@ func (s *Spider) ParseVideos(ctx context.Context, response pkg.Response) (err er
 		return
 	}
 	s.logger.Info("Videos", utils.JsonStr(extra))
-	if ctx == nil {
-		ctx = context.Background()
-	}
 
 	r := s.initialDataRe.FindSubmatch(response.GetBodyBytes())
 	if len(r) != 2 {
@@ -344,7 +334,8 @@ func (s *Spider) ParseVideos(ctx context.Context, response pkg.Response) (err er
 	return
 }
 
-func (s *Spider) Test(ctx context.Context, _ string) (err error) {
+// Test go run cmd/youtubeSpider/*.go -c dev.yml -n youtube -m prod
+func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraVideos{
 			Id: "sierramarie",
@@ -359,7 +350,8 @@ func (s *Spider) Test(ctx context.Context, _ string) (err error) {
 	return
 }
 
-func (s *Spider) FromKeyword(ctx context.Context, _ string) (err error) {
+// FromKeyword go run cmd/youtubeSpider/*.go -c dev.yml -n youtube -f FromKeyword -m prod
+func (s *Spider) FromKeyword(ctx pkg.Context, _ string) (err error) {
 	for _, v := range []string{
 		"veja",
 	} {
@@ -402,14 +394,16 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		publishedTimeRe: regexp.MustCompile(`(\d+)\s*(year|month|week|day|hour|minute|second)`),
 	}
 	spider.SetName("youtube")
+	spider.WithOptions(
+		pkg.WithName("youtube"),
+		pkg.WithTimeout(time.Second*30),
+		pkg.WithCustomMiddleware(new(Middleware)),
+		pkg.WithMongoPipeline(),
+	)
 
 	return
 }
 
 func main() {
-	app.NewApp(NewSpider,
-		pkg.WithTimeout(time.Second*30),
-		pkg.WithCustomMiddleware(new(Middleware)),
-		pkg.WithMongoPipeline(),
-	).Run()
+	app.NewApp(NewSpider).Run()
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
@@ -16,7 +15,7 @@ type Spider struct {
 	collectionBnu8105 string
 }
 
-func (s *Spider) ParseFind(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseFind(ctx pkg.Context, response pkg.Response) (err error) {
 	var extra ExtraFind
 	err = response.UnmarshalExtra(&extra)
 	if err != nil {
@@ -49,7 +48,7 @@ func (s *Spider) ParseFind(ctx context.Context, response pkg.Response) (err erro
 	return
 }
 
-func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseSearch(ctx pkg.Context, response pkg.Response) (err error) {
 	var extra ExtraSearch
 	err = response.UnmarshalExtra(&extra)
 	if err != nil {
@@ -88,8 +87,8 @@ func (s *Spider) ParseSearch(ctx context.Context, response pkg.Response) (err er
 	return
 }
 
-// Test go run cmd/bnuSpider/* -c dev.yml -m prod
-func (s *Spider) Test(ctx context.Context, _ string) (err error) {
+// Test go run cmd/bnuSpider/*.go -c dev.yml -n bnu -m prod
+func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraSearch{
 			Word: "丰",
@@ -103,8 +102,8 @@ func (s *Spider) Test(ctx context.Context, _ string) (err error) {
 	return
 }
 
-// FromFind go run cmd/bnuSpider/* -c dev.yml -f FromFind -m prod
-func (s *Spider) FromFind(ctx context.Context, _ string) (err error) {
+// FromFind go run cmd/bnuSpider/*.go -c dev.yml -n bnu -f FromFind -m prod
+func (s *Spider) FromFind(ctx pkg.Context, _ string) (err error) {
 	for _, v := range []string{
 		"1",
 		//"2",
@@ -136,14 +135,15 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		logger:            baseSpider.GetLogger(),
 		collectionBnu8105: "bnu_8105",
 	}
-	spider.SetName("bnu")
+	spider.WithOptions(
+		pkg.WithName("bnu"),
+		pkg.WithCustomMiddleware(new(Middleware)),
+		pkg.WithMongoPipeline(),
+	)
 
 	return
 }
 
 func main() {
-	app.NewApp(NewSpider,
-		pkg.WithCustomMiddleware(new(Middleware)),
-		pkg.WithMongoPipeline(),
-	).Run()
+	app.NewApp(NewSpider).Run()
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
@@ -19,7 +18,7 @@ type Spider struct {
 	reItem               *regexp.Regexp
 }
 
-func (s *Spider) ParseDetail(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error) {
 	var extra ExtraDetail
 	err = response.UnmarshalExtra(&extra)
 	if err != nil {
@@ -49,7 +48,7 @@ func (s *Spider) ParseDetail(ctx context.Context, response pkg.Response) (err er
 	return
 }
 
-func (s *Spider) ParseIndex(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) {
 	links := response.AllLink()
 	if err != nil {
 		s.logger.Error(err)
@@ -86,8 +85,8 @@ func (s *Spider) ParseIndex(ctx context.Context, response pkg.Response) (err err
 	return
 }
 
-// Test go run cmd/baiduBaikeSpider/* -c dev.yml -m prod
-func (s *Spider) Test(ctx context.Context, _ string) (err error) {
+// Test go run cmd/baiduBaikeSpider/*.go -c dev.yml -n baidu-baike -m prod
+func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraDetail{
 			Keyword: "周口店遗址",
@@ -101,8 +100,8 @@ func (s *Spider) Test(ctx context.Context, _ string) (err error) {
 	return
 }
 
-// TestIndex go run cmd/baiduBaikeSpider/* -c dev.yml -m prod -f TestIndex
-func (s *Spider) TestIndex(ctx context.Context, _ string) (err error) {
+// TestIndex go run cmd/baiduBaikeSpider/*.go -c dev.yml -n baidu-baike -m prod -f TestIndex
+func (s *Spider) TestIndex(ctx pkg.Context, _ string) (err error) {
 	err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl("https://baike.baidu.com/").
 		SetCallBack(s.ParseIndex))
@@ -126,14 +125,15 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		collectionBaiduBaike: "baidu_baike",
 		reItem:               regexp.MustCompile(`/item/([^/]+)`),
 	}
-	spider.SetName("baidu-baike")
+	spider.WithOptions(
+		pkg.WithName("baidu-baike"),
+		pkg.WithCustomMiddleware(new(Middleware)),
+		pkg.WithMongoPipeline(),
+	)
 
 	return
 }
 
 func main() {
-	app.NewApp(NewSpider,
-		pkg.WithCustomMiddleware(new(Middleware)),
-		pkg.WithMongoPipeline(),
-	).Run()
+	app.NewApp(NewSpider).Run()
 }

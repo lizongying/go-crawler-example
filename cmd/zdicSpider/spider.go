@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
@@ -18,15 +17,14 @@ type Spider struct {
 	collectionZdicWord string
 }
 
-func (s *Spider) ParseCategory(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseCategory(ctx pkg.Context, response pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
 		s.logger.Error(err)
 		return
 	}
 
-	items := x.FindStrMany(`//dt/a[@class="pck"]/@title`)
-	for _, v := range items {
+	for _, v := range x.FindStrMany(`//dt/a[@class="pck"]/@title`) {
 		e := s.YieldRequest(ctx, request.NewRequest().
 			SetUrl(fmt.Sprintf("https://www.zdic.net/zd/py/py/?py=%s", v)).
 			SetCallBack(s.ParseList))
@@ -39,15 +37,14 @@ func (s *Spider) ParseCategory(ctx context.Context, response pkg.Response) (err 
 	return
 }
 
-func (s *Spider) ParseList(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseList(ctx pkg.Context, response pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
 		s.logger.Error(err)
 		return
 	}
 
-	items := x.FindStrMany(`//a/@href`)
-	for _, v := range items {
+	for _, v := range x.FindStrMany(`//a/@href`) {
 		e := s.YieldRequest(ctx, request.NewRequest().
 			SetUrl(fmt.Sprintf("https://www.zdic.net%s", v)).
 			SetCallBack(s.ParseDetail))
@@ -60,7 +57,7 @@ func (s *Spider) ParseList(ctx context.Context, response pkg.Response) (err erro
 	return
 }
 
-func (s *Spider) ParseDetail(ctx context.Context, response pkg.Response) (err error) {
+func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error) {
 	x, err := response.Xpath()
 	if err != nil {
 		s.logger.Error(err)
@@ -84,8 +81,8 @@ func (s *Spider) ParseDetail(ctx context.Context, response pkg.Response) (err er
 	return
 }
 
-// Test go run cmd/zdicSpider/* -c dev.yml -m prod
-func (s *Spider) Test(ctx context.Context, _ string) (err error) {
+// Test go run cmd/zdicSpider/*.go -c dev.yml -n zdic -m prod
+func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl(fmt.Sprintf("https://www.zdic.net%s", "/hans/汉")).
 		SetCallBack(s.ParseDetail))
@@ -97,8 +94,8 @@ func (s *Spider) Test(ctx context.Context, _ string) (err error) {
 	return
 }
 
-// FromCategory go run cmd/zdicSpider/* -c dev.yml -f FromCategory -m prod
-func (s *Spider) FromCategory(ctx context.Context, _ string) (err error) {
+// FromCategory go run cmd/zdicSpider/*.go -c dev.yml -n zdic -f FromCategory -m prod
+func (s *Spider) FromCategory(ctx pkg.Context, _ string) (err error) {
 	err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl("https://www.zdic.net/zd/py/").
 		SetCallBack(s.ParseCategory))
@@ -121,16 +118,17 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		logger:             baseSpider.GetLogger(),
 		collectionZdicWord: "zdic_word",
 	}
-	spider.SetName("zdic")
+	spider.WithOptions(
+		pkg.WithName("zdic"),
+		pkg.WithRetryMaxTimes(100),
+		pkg.WithInterval(time.Second),
+		pkg.WithTimeout(time.Minute),
+		pkg.WithMongoPipeline(),
+	)
 
 	return
 }
 
 func main() {
-	app.NewApp(NewSpider,
-		pkg.WithRetryMaxTimes(100),
-		pkg.WithInterval(time.Second),
-		pkg.WithTimeout(time.Minute),
-		pkg.WithMongoPipeline(),
-	).Run()
+	app.NewApp(NewSpider).Run()
 }

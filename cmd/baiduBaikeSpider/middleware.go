@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"net/url"
@@ -14,7 +13,7 @@ type Middleware struct {
 	urlDetail string
 }
 
-func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err error) {
+func (m *Middleware) ProcessRequest(_ pkg.Context, request pkg.Request) (err error) {
 	switch request.GetExtraName() {
 	case "ExtraDetail":
 		var extra ExtraDetail
@@ -35,11 +34,13 @@ func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err
 	return
 }
 
-func (m *Middleware) FromCrawler(crawler pkg.Crawler) pkg.Middleware {
+func (m *Middleware) FromSpider(spider pkg.Spider) pkg.Middleware {
 	if m == nil {
-		return new(Middleware).FromCrawler(crawler)
+		return new(Middleware).FromSpider(spider)
 	}
-	m.logger = crawler.GetLogger()
+
+	m.UnimplementedMiddleware.FromSpider(spider)
+	m.logger = spider.GetLogger()
 	m.urlDetail = "https://baike.baidu.com/item/%s%s"
 	return m
 }

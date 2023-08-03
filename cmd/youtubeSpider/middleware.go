@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"net/url"
@@ -20,7 +19,7 @@ type Middleware struct {
 	apiKey string
 }
 
-func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err error) {
+func (m *Middleware) ProcessRequest(_ pkg.Context, request pkg.Request) (err error) {
 	switch request.GetExtraName() {
 	case "ExtraSearch":
 		var extraSearch ExtraSearch
@@ -58,8 +57,13 @@ func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err
 	return
 }
 
-func (m *Middleware) FromCrawler(crawler pkg.Crawler) pkg.Middleware {
-	m.logger = crawler.GetLogger()
+func (m *Middleware) FromSpider(spider pkg.Spider) pkg.Middleware {
+	if m == nil {
+		return new(Middleware).FromSpider(spider)
+	}
+
+	m.UnimplementedMiddleware.FromSpider(spider)
+	m.logger = spider.GetLogger()
 	m.urlSearch = "https://www.youtube.com/results?search_query=%s"
 	m.urlSearchApi = "https://www.youtube.com/youtubei/v1/search?key=%s"
 	m.urlVideos = "https://www.youtube.com/@%s/videos"

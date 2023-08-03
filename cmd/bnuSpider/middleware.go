@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/utils"
@@ -17,7 +16,7 @@ type Middleware struct {
 	aes       *utils.Aes
 }
 
-func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err error) {
+func (m *Middleware) ProcessRequest(_ pkg.Context, request pkg.Request) (err error) {
 	switch request.GetExtraName() {
 	case "ExtraFind":
 		var extraFind ExtraFind
@@ -48,7 +47,7 @@ func (m *Middleware) ProcessRequest(_ context.Context, request pkg.Request) (err
 	return
 }
 
-func (m *Middleware) ProcessResponse(_ context.Context, response pkg.Response) (err error) {
+func (m *Middleware) ProcessResponse(_ pkg.Context, response pkg.Response) (err error) {
 	var bodyBytes []byte
 	bodyBytes, err = m.aes.Decrypt(string(response.GetBodyBytes()))
 	if err != nil {
@@ -59,8 +58,13 @@ func (m *Middleware) ProcessResponse(_ context.Context, response pkg.Response) (
 	return
 }
 
-func (m *Middleware) FromCrawler(crawler pkg.Crawler) pkg.Middleware {
-	m.logger = crawler.GetLogger()
+func (m *Middleware) FromSpider(spider pkg.Spider) pkg.Middleware {
+	if m == nil {
+		return new(Middleware).FromSpider(spider)
+	}
+
+	m.UnimplementedMiddleware.FromSpider(spider)
+	m.logger = spider.GetLogger()
 	m.urlSearch = "https://qxk.bnu.edu.cn/qxkapi/gjqxk/hanzi/search"
 	m.urlFind = "https://qxk.bnu.edu.cn/qxkapi/gjqxk/bishun/find?content=%s&zifujiId=49c12ccb-35cc-437b-af4a-3fe126df8fca"
 	m.aes, _ = utils.NewAes([]byte("crzjmwlcmgylxtyl"), utils.ECB)
