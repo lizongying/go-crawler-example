@@ -25,3 +25,7 @@ youtubeSpider:
 zdicSpider:
 	go vet ./cmd/zdicSpider
 	go build -ldflags "-s -w -X $(module)/pkg/logger.name=zdic" -o ./releases/zdicSpider ./cmd/zdicSpider
+
+zhihuSpider:
+	go vet ./cmd/zhihuSpider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=zhihu" -o ./releases/zhihuSpider ./cmd/zhihuSpider

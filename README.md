@@ -516,7 +516,7 @@ make
 ### update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@89462d5
+go get -u github.com/lizongying/go-crawler@629e8d5
 ```
 
 ## Docker build
