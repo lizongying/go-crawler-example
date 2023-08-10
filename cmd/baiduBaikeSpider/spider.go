@@ -20,8 +20,7 @@ type Spider struct {
 
 func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error) {
 	var extra ExtraDetail
-	err = response.UnmarshalExtra(&extra)
-	if err != nil {
+	if err = response.UnmarshalExtra(&extra); err != nil {
 		s.logger.Error(err)
 		return
 	}
@@ -29,18 +28,20 @@ func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error)
 
 	content := response.BodyText()
 	if content == "" {
+		err = errors.New("content empty")
+		s.logger.Error(err)
 		return
 	}
+
 	data := DataWord{
 		Id:      extra.Keyword,
 		Keyword: extra.Keyword,
 		Content: content,
 	}
-	err = s.YieldItem(ctx, items.NewItemMongo(s.collectionBaiduBaike, true).
+	if err = s.YieldItem(ctx, items.NewItemMongo(s.collectionBaiduBaike, true).
 		SetUniqueKey(extra.Keyword).
 		SetId(extra.Keyword).
-		SetData(&data))
-	if err != nil {
+		SetData(&data)); err != nil {
 		s.logger.Error(err)
 		return
 	}
@@ -50,10 +51,6 @@ func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error)
 
 func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) {
 	links := response.AllLink()
-	if err != nil {
-		s.logger.Error(err)
-		return
-	}
 
 	for _, v := range links {
 		r := s.reItem.FindStringSubmatch(v.Path)
@@ -62,20 +59,18 @@ func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) 
 			if e != nil {
 				continue
 			}
-			err = s.YieldRequest(ctx, request.NewRequest().
+			if err = s.YieldRequest(ctx, request.NewRequest().
 				SetExtra(&ExtraDetail{
 					Keyword: decodedString,
 				}).
-				SetCallBack(s.ParseDetail))
-			if err != nil {
+				SetCallBack(s.ParseDetail)); err != nil {
 				s.logger.Error(err)
 				continue
 			}
 		} else {
-			err = s.YieldRequest(ctx, request.NewRequest().
+			if err = s.YieldRequest(ctx, request.NewRequest().
 				SetUrl(v.String()).
-				SetCallBack(s.ParseIndex))
-			if err != nil {
+				SetCallBack(s.ParseIndex)); err != nil {
 				s.logger.Error(err)
 				continue
 			}
@@ -87,12 +82,11 @@ func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) 
 
 // Test go run cmd/baiduBaikeSpider/*.go -c dev.yml -n baidu-baike -m prod
 func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, request.NewRequest().
+	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraDetail{
 			Keyword: "周口店遗址",
 		}).
-		SetCallBack(s.ParseDetail))
-	if err != nil {
+		SetCallBack(s.ParseDetail)); err != nil {
 		s.logger.Error(err)
 		return
 	}
@@ -102,10 +96,9 @@ func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 
 // TestIndex go run cmd/baiduBaikeSpider/*.go -c dev.yml -n baidu-baike -f TestIndex -m prod
 func (s *Spider) TestIndex(ctx pkg.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, request.NewRequest().
+	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl("https://baike.baidu.com/").
-		SetCallBack(s.ParseIndex))
-	if err != nil {
+		SetCallBack(s.ParseIndex)); err != nil {
 		s.logger.Error(err)
 		return
 	}
@@ -114,11 +107,6 @@ func (s *Spider) TestIndex(ctx pkg.Context, _ string) (err error) {
 }
 
 func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
-	if baseSpider == nil {
-		err = errors.New("nil baseSpider")
-		return
-	}
-
 	spider = &Spider{
 		Spider:               baseSpider,
 		logger:               baseSpider.GetLogger(),

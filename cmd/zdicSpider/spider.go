@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
@@ -25,10 +24,9 @@ func (s *Spider) ParseCategory(ctx pkg.Context, response pkg.Response) (err erro
 	}
 
 	for _, v := range x.FindStrMany(`//dt/a[@class="pck"]/@title`) {
-		e := s.YieldRequest(ctx, request.NewRequest().
+		if e := s.YieldRequest(ctx, request.NewRequest().
 			SetUrl(fmt.Sprintf("https://www.zdic.net/zd/py/py/?py=%s", v)).
-			SetCallBack(s.ParseList))
-		if e != nil {
+			SetCallBack(s.ParseList)); e != nil {
 			s.logger.Error(e)
 			continue
 		}
@@ -45,10 +43,9 @@ func (s *Spider) ParseList(ctx pkg.Context, response pkg.Response) (err error) {
 	}
 
 	for _, v := range x.FindStrMany(`//a/@href`) {
-		e := s.YieldRequest(ctx, request.NewRequest().
+		if e := s.YieldRequest(ctx, request.NewRequest().
 			SetUrl(fmt.Sprintf("https://www.zdic.net%s", v)).
-			SetCallBack(s.ParseDetail))
-		if e != nil {
+			SetCallBack(s.ParseDetail)); e != nil {
 			s.logger.Error(e)
 			continue
 		}
@@ -70,10 +67,9 @@ func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error)
 		Id:  id,
 		Fan: fan,
 	}
-	err = s.YieldItem(ctx, items.NewItemMongo(s.collectionZdicWord, true).
+	if err = s.YieldItem(ctx, items.NewItemMongo(s.collectionZdicWord, true).
 		SetId(id).
-		SetData(&data))
-	if err != nil {
+		SetData(&data)); err != nil {
 		s.logger.Error(err)
 		return
 	}
@@ -83,10 +79,9 @@ func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error)
 
 // Test go run cmd/zdicSpider/*.go -c dev.yml -n zdic -m prod
 func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, request.NewRequest().
+	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl(fmt.Sprintf("https://www.zdic.net%s", "/hans/汉")).
-		SetCallBack(s.ParseDetail))
-	if err != nil {
+		SetCallBack(s.ParseDetail)); err != nil {
 		s.logger.Error(err)
 		return
 	}
@@ -96,10 +91,9 @@ func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 
 // FromCategory go run cmd/zdicSpider/*.go -c dev.yml -n zdic -f FromCategory -m prod
 func (s *Spider) FromCategory(ctx pkg.Context, _ string) (err error) {
-	err = s.YieldRequest(ctx, request.NewRequest().
+	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl("https://www.zdic.net/zd/py/").
-		SetCallBack(s.ParseCategory))
-	if err != nil {
+		SetCallBack(s.ParseCategory)); err != nil {
 		s.logger.Error(err)
 		return
 	}
@@ -108,11 +102,6 @@ func (s *Spider) FromCategory(ctx pkg.Context, _ string) (err error) {
 }
 
 func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
-	if baseSpider == nil {
-		err = errors.New("nil baseSpider")
-		return
-	}
-
 	spider = &Spider{
 		Spider:             baseSpider,
 		logger:             baseSpider.GetLogger(),

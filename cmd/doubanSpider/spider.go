@@ -26,8 +26,12 @@ type Spider struct {
 
 func (s *Spider) ParseTop250(ctx pkg.Context, response pkg.Response) (err error) {
 	x, err := response.Xpath()
-	it := x.FindNodeMany(`//div[@class="item"]`)
-	for _, i := range it {
+	if err != nil {
+		s.logger.Error(err)
+		return
+	}
+
+	for _, i := range x.FindNodeMany(`//div[@class="item"]`) {
 		data := DataTop250{
 			Id:      i.FindIntOne(`.//em/text()`),
 			Img:     i.FindStrOne(`.//img/@src`),
@@ -36,11 +40,10 @@ func (s *Spider) ParseTop250(ctx pkg.Context, response pkg.Response) (err error)
 			Comment: i.FindStrOne(`.//div[@class="star"]/span[last()]/text()`),
 			Quote:   i.FindStrOne(`.//span[@class="inq"]/text()`),
 		}
-		err = s.YieldItem(ctx, items.NewItemMongo(s.collectionTop250, true).
+		if err = s.YieldItem(ctx, items.NewItemMongo(s.collectionTop250, true).
 			SetUniqueKey(strconv.Itoa(data.Id)).
 			SetId(data.Id).
-			SetData(&data))
-		if err != nil {
+			SetData(&data)); err != nil {
 			s.logger.Error(err)
 			continue
 		}
@@ -51,8 +54,7 @@ func (s *Spider) ParseTop250(ctx pkg.Context, response pkg.Response) (err error)
 // Test go run cmd/doubanSpider/*.go -c dev.yml -n douban-movie -f Test -m prod
 func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	for i := 0; i < 10; i++ {
-		start := i * 25
-		url := fmt.Sprintf("https://movie.douban.com/top250?start=%d&filter=", start)
+		url := fmt.Sprintf("https://movie.douban.com/top250?start=%d", i*25)
 		if err = s.YieldRequest(ctx, request.NewRequest().
 			SetUrl(url).
 			SetCallBack(s.ParseTop250)); err != nil {
