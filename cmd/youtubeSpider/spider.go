@@ -39,7 +39,7 @@ func (s *Spider) ParseSearch(ctx pkg.Context, response pkg.Response) (err error)
 	}
 	s.logger.Info("Search", utils.JsonStr(extra))
 
-	r := s.initialDataRe.FindSubmatch(response.GetBodyBytes())
+	r := s.initialDataRe.FindSubmatch(response.BodyBytes())
 	if len(r) != 2 {
 		err = errors.New("not find content")
 		s.logger.Error(err)
@@ -86,7 +86,7 @@ func (s *Spider) ParseSearch(ctx pkg.Context, response pkg.Response) (err error)
 		}
 	}
 
-	r = s.apiKeyRe.FindSubmatch(response.GetBodyBytes())
+	r = s.apiKeyRe.FindSubmatch(response.BodyBytes())
 	if len(r) != 2 {
 		err = errors.New("not find api-key")
 		s.logger.Error(err)
@@ -208,7 +208,7 @@ func (s *Spider) ParseVideos(ctx pkg.Context, response pkg.Response) (err error)
 	}
 	s.logger.Info("Videos", utils.JsonStr(extra))
 
-	r := s.initialDataRe.FindSubmatch(response.GetBodyBytes())
+	r := s.initialDataRe.FindSubmatch(response.BodyBytes())
 	if len(r) != 2 {
 		err = errors.New("not find content")
 		s.logger.Error(err)

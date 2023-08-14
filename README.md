@@ -30,7 +30,7 @@ make
 ### update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@6fc1b1c
+go get -u github.com/lizongying/go-crawler@f417bfc
 ```
 
 ## Docker build

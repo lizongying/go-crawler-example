@@ -39,7 +39,7 @@ func (m *Middleware) ProcessRequest(_ pkg.Context, request pkg.Request) (err err
 		b := fmt.Sprintf(`ziFuJiId=%s&jstjId=%s&content=%s`, url.QueryEscape("zEm7A9LuQRXiTpuujAASv5ZkY8o5AP8y4FDl5qAte9PfHuy7vpDo6e6AzRRCBEKm"), url.QueryEscape("WagkdUR2Niv2c+IxZAl5V2sIf1yADd9a+TvoJFx0sd1dWfwAszERW4dywPjrLMOF"),
 			url.QueryEscape(encryptedStr),
 		)
-		request.SetBody(b)
+		request.SetBodyStr(b)
 		request.SetHeader("Content-Type", "application/x-www-form-urlencoded")
 		request.SetHeader("Accept", "application/json, text/plain, */*")
 	}
@@ -49,7 +49,7 @@ func (m *Middleware) ProcessRequest(_ pkg.Context, request pkg.Request) (err err
 
 func (m *Middleware) ProcessResponse(_ pkg.Context, response pkg.Response) (err error) {
 	var bodyBytes []byte
-	bodyBytes, err = m.aes.Decrypt(string(response.GetBodyBytes()))
+	bodyBytes, err = m.aes.Decrypt(response.BodyStr())
 	if err != nil {
 		m.logger.Error(err)
 		return

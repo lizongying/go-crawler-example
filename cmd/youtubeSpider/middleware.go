@@ -42,7 +42,7 @@ func (m *Middleware) ProcessRequest(_ pkg.Context, request pkg.Request) (err err
 		}
 		request.SetMethod("POST")
 		request.SetUrl(fmt.Sprintf(m.urlSearchApi, m.apiKey))
-		request.SetBody(fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"continuation":"%s"}`, extraSearchApi.NextPageToken))
+		request.SetBodyStr(fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"continuation":"%s"}`, extraSearchApi.NextPageToken))
 	case "ExtraVideos":
 		var extraVideos ExtraVideos
 		err = request.UnmarshalExtra(&extraVideos)
