@@ -24,13 +24,13 @@ make
 ### run
 
 ```shell
-./releases/bnuSpider -c dev.yml -n bnu -f Test -m dev
+./releases/bnuSpider -c dev.yml -n bnu -f Test -m once
 ```
 
 ### update package
 
 ```shell
-go get -u github.com/lizongying/go-crawler@6ee43f3
+go get -u github.com/lizongying/go-crawler@f5ce328
 ```
 
 ## Docker build
@@ -40,5 +40,5 @@ docker build -f ./cmd/testSpider/Dockerfile -t crawler/baidu-baike-spider:latest
 ```
 
 ```shell
-docker run -d crawler/baidu-baike-spider:latest spider -c example.yml -n test -f Test -m dev
+docker run -d crawler/baidu-baike-spider:latest spider -c example.yml -n baidu-baike -f Test -m once
 ```
