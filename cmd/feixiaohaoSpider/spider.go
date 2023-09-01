@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/app"
-	"github.com/lizongying/go-crawler/pkg/mockServer"
 	"github.com/lizongying/go-crawler/pkg/request"
 	"github.com/lizongying/go-crawler/pkg/utils"
 )
@@ -16,7 +15,7 @@ type Spider struct {
 func (s *Spider) ParseRank(_ pkg.Context, response pkg.Response) (err error) {
 	var dataRanks DataRanks
 	response.MustUnmarshalData(&dataRanks)
-	utils.DumpJson(dataRanks.Data)
+	utils.DumpJsonPretty(dataRanks.Data)
 	return
 }
 
@@ -40,7 +39,5 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 }
 
 func main() {
-	app.NewApp(NewSpider).Run(
-		pkg.WithMockServerRoute(mockServer.NewRouteOk),
-	)
+	app.NewApp(NewSpider).Run()
 }
