@@ -81,7 +81,7 @@ func (s *Spider) ParseSearch(ctx pkg.Context, response pkg.Response) (err error)
 	return
 }
 
-// Test go run cmd/bnuSpider/*.go -c dev.yml -n bnu -m prod
+// Test go run cmd/bnuSpider/*.go -c dev.yml -n bnu -m once
 func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraSearch{
@@ -95,7 +95,7 @@ func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	return
 }
 
-// FromFind go run cmd/bnuSpider/*.go -c dev.yml -n bnu -f FromFind -m prod
+// FromFind go run cmd/bnuSpider/*.go -c dev.yml -n bnu -f FromFind -m once
 func (s *Spider) FromFind(ctx pkg.Context, _ string) (err error) {
 	for _, v := range []string{
 		"1",

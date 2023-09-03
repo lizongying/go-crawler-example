@@ -51,7 +51,7 @@ func (s *Spider) ParseTop250(ctx pkg.Context, response pkg.Response) (err error)
 	return
 }
 
-// Test go run cmd/doubanSpider/*.go -c dev.yml -n douban-movie -f Test -m prod
+// Test go run cmd/doubanSpider/*.go -c dev.yml -n douban-movie -f Test -m once
 func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	for i := 0; i < 10; i++ {
 		url := fmt.Sprintf("https://movie.douban.com/top250?start=%d", i*25)

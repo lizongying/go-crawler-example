@@ -3,8 +3,8 @@ module github.com/lizongying/go-crawler-example
 go 1.20
 
 require (
-	github.com/lizongying/go-crawler v0.0.4-0.20230901144830-190ca0f7f99e
-	golang.org/x/text v0.9.0
+	github.com/lizongying/go-crawler v0.0.5-0.20230903081307-0a8174ecf4b5
+	golang.org/x/text v0.13.0
 )
 
 require (
@@ -38,7 +38,7 @@ require (
 	github.com/lizongying/cron v1.0.0 // indirect
 	github.com/lizongying/go-query v0.0.0-20230720084938-e0776701ba5f // indirect
 	github.com/lizongying/go-re v0.0.0-20230522044635-8e45e9501811 // indirect
-	github.com/lizongying/go-xpath v0.0.0-20230508033725-6786fb94ccc1 // indirect
+	github.com/lizongying/go-xpath v0.0.0-20230903075246-046894de53ca // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
@@ -64,10 +64,10 @@ require (
 	go.uber.org/fx v1.19.2 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
-	golang.org/x/crypto v0.5.0 // indirect
-	golang.org/x/net v0.9.0 // indirect
+	golang.org/x/crypto v0.12.0 // indirect
+	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

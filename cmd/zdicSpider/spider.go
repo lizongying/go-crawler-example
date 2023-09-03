@@ -77,7 +77,7 @@ func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error)
 	return
 }
 
-// Test go run cmd/zdicSpider/*.go -c dev.yml -n zdic -m prod
+// Test go run cmd/zdicSpider/*.go -c dev.yml -n zdic -m once
 func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl(fmt.Sprintf("https://www.zdic.net%s", "/hans/汉")).
@@ -89,7 +89,7 @@ func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	return
 }
 
-// FromCategory go run cmd/zdicSpider/*.go -c dev.yml -n zdic -f FromCategory -m prod
+// FromCategory go run cmd/zdicSpider/*.go -c dev.yml -n zdic -f FromCategory -m once
 func (s *Spider) FromCategory(ctx pkg.Context, _ string) (err error) {
 	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl("https://www.zdic.net/zd/py/").

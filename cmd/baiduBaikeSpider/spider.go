@@ -80,7 +80,7 @@ func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) 
 	return
 }
 
-// Test go run cmd/baiduBaikeSpider/*.go -c dev.yml -n baidu-baike -m prod
+// Test go run cmd/baiduBaikeSpider/*.go -c dev.yml -n baidu-baike -m once
 func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraDetail{
@@ -94,7 +94,7 @@ func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	return
 }
 
-// TestIndex go run cmd/baiduBaikeSpider/*.go -c dev.yml -n baidu-baike -f TestIndex -m prod
+// TestIndex go run cmd/baiduBaikeSpider/*.go -c dev.yml -n baidu-baike -f TestIndex -m once
 func (s *Spider) TestIndex(ctx pkg.Context, _ string) (err error) {
 	if err = s.YieldRequest(ctx, request.NewRequest().
 		SetUrl("https://baike.baidu.com/").
