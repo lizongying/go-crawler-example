@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
+	"net/http"
 	"net/url"
 )
 
@@ -40,7 +41,7 @@ func (m *Middleware) ProcessRequest(_ pkg.Context, request pkg.Request) (err err
 			m.logger.Error(err)
 			return
 		}
-		request.SetMethod("POST")
+		request.SetMethod(http.MethodPost)
 		request.SetUrl(fmt.Sprintf(m.urlSearchApi, m.apiKey))
 		request.SetBodyStr(fmt.Sprintf(`{"context":{"client":{"hl":"en","gl":"US","clientName":"WEB","clientVersion":"2.20230327.01.00"}},"continuation":"%s"}`, extraSearchApi.NextPageToken))
 	case "ExtraVideos":

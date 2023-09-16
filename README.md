@@ -3,9 +3,12 @@
 go-crawler的爬虫示例。
 
 [go-crawler-example](https://github.com/lizongying/go-crawler-example)
-[go-crawler](https://github.com/lizongying/go-crawler)
+
 [english](https://github.com/lizongying/go-crawler/README.md)
+
 [中文](https://github.com/lizongying/go-crawler/README_CN.md)
+
+[go-crawler](https://github.com/lizongying/go-crawler)
 
 ### clone
 
@@ -31,7 +34,7 @@ make
 
 ```shell
 go get -u github.com/lizongying/go-crawler@latest
-go get -u github.com/lizongying/go-crawler@32fab4c
+go get -u github.com/lizongying/go-crawler@ae8fb8d
 ```
 
 ## Docker build

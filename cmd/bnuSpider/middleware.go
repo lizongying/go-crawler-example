@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/lizongying/go-crawler/pkg"
 	"github.com/lizongying/go-crawler/pkg/utils"
+	"net/http"
 	"net/url"
 )
 
@@ -33,7 +34,7 @@ func (m *Middleware) ProcessRequest(_ pkg.Context, request pkg.Request) (err err
 			m.logger.Error(err)
 			return
 		}
-		request.SetMethod("POST")
+		request.SetMethod(http.MethodPost)
 		request.SetUrl(m.urlSearch)
 		encryptedStr, _ := m.aes.Encrypt([]byte(extraSearch.Word))
 		b := fmt.Sprintf(`ziFuJiId=%s&jstjId=%s&content=%s`, url.QueryEscape("zEm7A9LuQRXiTpuujAASv5ZkY8o5AP8y4FDl5qAte9PfHuy7vpDo6e6AzRRCBEKm"), url.QueryEscape("WagkdUR2Niv2c+IxZAl5V2sIf1yADd9a+TvoJFx0sd1dWfwAszERW4dywPjrLMOF"),
