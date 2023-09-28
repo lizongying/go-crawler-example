@@ -24,6 +24,8 @@ go-crawler的爬虫示例。
 
 [feixiaohao](https://github.com/lizongying/go-crawler-example/tree/main/cmd/feixiaohaoSpider)
 
+[levi](https://github.com/lizongying/go-crawler-example/tree/main/cmd/leviSpider)
+
 [nike](https://github.com/lizongying/go-crawler-example/tree/main/cmd/nikeSpider)
 
 [youtube](https://github.com/lizongying/go-crawler-example/tree/main/cmd/youtubeSpider)
@@ -56,7 +58,7 @@ make
 
 ```shell
 go get -u github.com/lizongying/go-crawler@latest
-go get -u github.com/lizongying/go-crawler@db55a76
+go get -u github.com/lizongying/go-crawler@11a7d41
 ```
 
 ## Docker build

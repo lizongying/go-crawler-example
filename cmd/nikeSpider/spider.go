@@ -6,7 +6,6 @@ import (
 	"github.com/lizongying/go-crawler/pkg/items"
 	"github.com/lizongying/go-crawler/pkg/request"
 	"github.com/lizongying/go-json/gjson"
-	"regexp"
 )
 
 type Spider struct {
@@ -14,13 +13,11 @@ type Spider struct {
 	logger             pkg.Logger
 	collectionCategory string
 	collectionDetail   string
-	reItem             *regexp.Regexp
 }
 
 func (s *Spider) ParseList(ctx pkg.Context, response pkg.Response) (err error) {
 	js := response.MustJson()
-	products := js.ManySelector(`data.products.products`)
-	for _, v := range products {
+	for _, v := range js.ManySelector(`data.products.products`) {
 		data := DataDetail{
 			Id:       v.One(`id`).String(),
 			Title:    v.One(`title`).String(),
@@ -54,8 +51,7 @@ func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) 
 		return err
 	}
 
-	categories := js.ManySelector(`props.pageProps.initialState.Wall.facetNav.categories`)
-	for _, v := range categories {
+	for _, v := range js.ManySelector(`props.pageProps.initialState.Wall.facetNav.categories`) {
 		data := DataCategory{
 			Id:    v.One(`attributeId`).String(),
 			Name:  v.One(`alternateName`).String(),
@@ -67,8 +63,7 @@ func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) 
 			SetData(&data))
 	}
 
-	products := js.ManySelector(`props.pageProps.initialState.Wall.products`)
-	for _, v := range products {
+	for _, v := range js.ManySelector(`props.pageProps.initialState.Wall.products`) {
 		data := DataDetail{
 			Id:       v.One(`id`).String(),
 			Title:    v.One(`title`).String(),
@@ -126,7 +121,6 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 		logger:             baseSpider.GetLogger(),
 		collectionCategory: "nike_category",
 		collectionDetail:   "nike_detail",
-		reItem:             regexp.MustCompile(`/item/([^/]+)`),
 	}
 	spider.WithOptions(
 		pkg.WithName("nike"),

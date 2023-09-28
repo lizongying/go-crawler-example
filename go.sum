@@ -83,6 +83,8 @@ github.com/lizongying/cron v1.0.0 h1:mxAaooETYGsqta04WCmtEzJhRlYonVsweGtFY7bMuCU
 github.com/lizongying/cron v1.0.0/go.mod h1:DXQE+B2MzkaDNdP0rSZ3vAgZXLHC4fPxEAmAu1af1+Y=
 github.com/lizongying/go-crawler v0.0.12 h1:RP99VJGtSBHEPHAnGWz3QOLVDCl0t62um5Ek3DF5kgA=
 github.com/lizongying/go-crawler v0.0.12/go.mod h1:LP/iJdM5cS76OD8y2/FKRUgb0ZepSQGO75arjd9aKZQ=
+github.com/lizongying/go-crawler v0.0.13-0.20230928145351-11a7d4141b44 h1:eeVuTJsAvOi0PaOSFXwM5cWhEiNaFO26IK1t0GzmpT8=
+github.com/lizongying/go-crawler v0.0.13-0.20230928145351-11a7d4141b44/go.mod h1:LP/iJdM5cS76OD8y2/FKRUgb0ZepSQGO75arjd9aKZQ=
 github.com/lizongying/go-css v0.0.0-20230906104236-b58497123e0f h1:2zaV/KZ/zFTYyBHRjf6EEbHB7gbGIIy3z+QlcKC1rRI=
 github.com/lizongying/go-css v0.0.0-20230906104236-b58497123e0f/go.mod h1:uXnGqUn4wsh5AJUJMH7dYhSEPdjeMzTktt8r3TjEO9I=
 github.com/lizongying/go-json v0.0.0-20230906102344-7915011b6304 h1:LEqGvzkC40ccCRbKFaLY+THBN6xTcRs03EeYNdcEiwE=
