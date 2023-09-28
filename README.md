@@ -10,17 +10,39 @@ go-crawler的爬虫示例。
 
 [go-crawler](https://github.com/lizongying/go-crawler)
 
+## Usage
+
+[baidu-baike](https://github.com/lizongying/go-crawler-example/tree/main/cmd/baiduBaikeSpider)
+
+[baidu-tieba](https://github.com/lizongying/go-crawler-example/tree/main/cmd/baiduTiebaSpider)
+
+[baidu-zhidao](https://github.com/lizongying/go-crawler-example/tree/main/cmd/baiduZhidaoSpider)
+
+[bnu](https://github.com/lizongying/go-crawler-example/tree/main/cmd/bnuSpider)
+
+[douban](https://github.com/lizongying/go-crawler-example/tree/main/cmd/doubanSpider)
+
+[feixiaohao](https://github.com/lizongying/go-crawler-example/tree/main/cmd/feixiaohaoSpider)
+
+[nike](https://github.com/lizongying/go-crawler-example/tree/main/cmd/nikeSpider)
+
+[youtube](https://github.com/lizongying/go-crawler-example/tree/main/cmd/youtubeSpider)
+
+[zdic](https://github.com/lizongying/go-crawler-example/tree/main/cmd/zdicSpider)
+
+[zhihu](https://github.com/lizongying/go-crawler-example/tree/main/cmd/zhihuSpider)
+
 ### clone
 
 ```shell
 git clone git@github.com:lizongying/go-crawler-example.git crawler
-cd crawler
 
 ```
 
 ### build
 
 ```shell
+cd crawler
 make
 ```
 
