@@ -76,7 +76,7 @@ func (s *Spider) ParseSearch(ctx pkg.Context, response pkg.Response) (err error)
 						UserName: runs[0].Text,
 					}).
 					SetCallBack(s.ParseVideos).
-					SetProxyEnable(&s.proxyEnable).
+					SetProxyEnable(s.proxyEnable).
 					SetUniqueKey(id))
 				if e != nil {
 					s.logger.Error(e)
@@ -108,7 +108,7 @@ func (s *Spider) ParseSearch(ctx pkg.Context, response pkg.Response) (err error)
 			NextPageToken: token,
 		}).
 		SetCallBack(s.ParseSearchApi).
-		SetProxyEnable(&s.proxyEnable))
+		SetProxyEnable(s.proxyEnable))
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -166,7 +166,7 @@ func (s *Spider) ParseSearchApi(ctx pkg.Context, response pkg.Response) (err err
 					}).
 					SetCallBack(s.ParseVideos).
 					SetUniqueKey(id).
-					SetProxyEnable(&s.proxyEnable))
+					SetProxyEnable(s.proxyEnable))
 				if e != nil {
 					s.logger.Error(e)
 					continue
@@ -189,7 +189,7 @@ func (s *Spider) ParseSearchApi(ctx pkg.Context, response pkg.Response) (err err
 				NextPageToken: token,
 			}).
 			SetCallBack(s.ParseSearchApi).
-			SetProxyEnable(&s.proxyEnable))
+			SetProxyEnable(s.proxyEnable))
 		if err != nil {
 			s.logger.Error(err)
 			return
@@ -341,7 +341,7 @@ func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 			Id: "sierramarie",
 		}).
 		SetCallBack(s.ParseVideos).
-		SetProxyEnable(&s.proxyEnable))
+		SetProxyEnable(s.proxyEnable))
 	if err != nil {
 		s.logger.Error(err)
 		return
@@ -363,7 +363,7 @@ func (s *Spider) FromKeyword(ctx pkg.Context, _ string) (err error) {
 				MaxPage: 2,
 			}).
 			SetCallBack(s.ParseSearch).
-			SetProxyEnable(&s.proxyEnable))
+			SetProxyEnable(s.proxyEnable))
 		if e != nil {
 			s.logger.Error(e)
 		}
