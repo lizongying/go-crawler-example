@@ -17,9 +17,8 @@ redis:
     password:
     db: 0
 sqlite:
-  - name: sqlite
-    path: static/crawler.db
-    database: crawler
+#  - name: sqlite
+#    path: static/crawler.db
 store:
   #  - name: minio
   #    type:  # s3/oss/cos/minio/file
