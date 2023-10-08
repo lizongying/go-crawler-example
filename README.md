@@ -58,7 +58,7 @@ make
 
 ```shell
 go get -u github.com/lizongying/go-crawler@latest
-go get -u github.com/lizongying/go-crawler@11a7d41
+go get -u github.com/lizongying/go-crawler@6f52307
 ```
 
 ## Docker build
