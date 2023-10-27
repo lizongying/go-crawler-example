@@ -62,7 +62,7 @@ func (s *Spider) ParseDetail(ctx pkg.Context, response pkg.Response) (err error)
 	}
 
 	fan := x.FindStrOne(`//span[text()="繁体"]/../a/text()`)
-	id := response.GetUrl()[strings.LastIndex(response.GetUrl(), "/")+1:]
+	id := response.Url()[strings.LastIndex(response.Url(), "/")+1:]
 	data := DataWord{
 		Id:  id,
 		Fan: fan,
