@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: tidy baiduBaikeSpider baiduTiebaSpider baiduZhidaoSpider bnuSpider doubanSpider feixiaohaoSpider nikeSpider youtubeSpider zdicSpider zhihuSpider
+all: tidy multi_spider baidu_baike_spider baidu_image_spider baidu_tieba_spider baidu_zhidao_spider bnu_spider douban_spider feixiaohao_spider levi_spider nike_spider youtube_spider zdic_spider zhihu_spider
 
 module := github.com/lizongying/go-crawler
 
@@ -10,42 +10,54 @@ shell:
 tidy:
 	go mod tidy
 
-baiduBaikeSpider:
-	go vet ./cmd/baiduBaikeSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=baiduBaike" -o ./releases/baiduBaikeSpider ./cmd/baiduBaikeSpider
+multi_spider:
+	go vet ./cmd/multi_spider
+	go build -ldflags "-s -w" -o ./releases/multi_spider ./cmd/multi_spider
 
-baiduTiebaSpider:
-	go vet ./cmd/baiduTiebaSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=baiduTieba" -o ./releases/baiduTiebaSpider ./cmd/baiduTiebaSpider
+baidu_baike_spider:
+	go vet ./cmd/baidu_baike_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=baidu_baike_spider" -o ./releases/baidu_baike_spider ./cmd/baidu_baike_spider
 
-baiduZhidaoSpider:
-	go vet ./cmd/baiduZhidaoSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=baiduZhidao" -o ./releases/baiduZhidaoSpider ./cmd/baiduZhidaoSpider
+baidu_image_spider:
+	go vet ./cmd/baidu_image_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=baidu_image_spider" -o ./releases/baidu_image_spider ./cmd/baidu_image_spider
 
-bnuSpider:
-	go vet ./cmd/bnuSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=bnu" -o ./releases/bnuSpider ./cmd/bnuSpider
+baidu_tieba_spider:
+	go vet ./cmd/baidu_tieba_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=baidu_tieba_spider" -o ./releases/baidu_tieba_spider ./cmd/baidu_tieba_spider
 
-doubanSpider:
-	go vet ./cmd/doubanSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=douban" -o ./releases/doubanSpider ./cmd/doubanSpider
+baidu_zhidao_spider:
+	go vet ./cmd/baidu_zhidao_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=baidu_zhidao_spider" -o ./releases/baidu_zhidao_spider ./cmd/baidu_zhidao_spider
 
-feixiaohaoSpider:
-	go vet ./cmd/feixiaohaoSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=feixiaohao" -o ./releases/feixiaohaoSpider ./cmd/feixiaohaoSpider
+bnu_spider:
+	go vet ./cmd/bnu_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=bnu_spider" -o ./releases/bnu_spider ./cmd/bnu_spider
 
-nikeSpider:
-	go vet ./cmd/nikeSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=nike" -o ./releases/nikeSpider ./cmd/nikeSpider
+douban_spider:
+	go vet ./cmd/douban_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=douban_spider" -o ./releases/douban_spider ./cmd/douban_spider
 
-youtubeSpider:
-	go vet ./cmd/youtubeSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=youtube" -o ./releases/youtubeSpider ./cmd/youtubeSpider
+feixiaohao_spider:
+	go vet ./cmd/feixiaohao_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=feixiaohao_spider" -o ./releases/feixiaohao_spider ./cmd/feixiaohao_spider
 
-zdicSpider:
-	go vet ./cmd/zdicSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=zdic" -o ./releases/zdicSpider ./cmd/zdicSpider
+levi_spider:
+	go vet ./cmd/levi_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=levi_spider" -o ./releases/levi_spider ./cmd/levi_spider
 
-zhihuSpider:
-	go vet ./cmd/zhihuSpider
-	go build -ldflags "-s -w -X $(module)/pkg/logger.name=zhihu" -o ./releases/zhihuSpider ./cmd/zhihuSpider
+nike_spider:
+	go vet ./cmd/nike_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=nike_spider" -o ./releases/nike_spider ./cmd/nike_spider
+
+youtube_spider:
+	go vet ./cmd/youtube_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=youtube_spider" -o ./releases/youtube_spider ./cmd/youtube_spider
+
+zdic_spider:
+	go vet ./cmd/zdic_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=zdic_spider" -o ./releases/zdic_spider ./cmd/zdic_spider
+
+zhihu_spider:
+	go vet ./cmd/zhihu_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=zhihu_spider" -o ./releases/zhihu_spider ./cmd/zhihu_spider
