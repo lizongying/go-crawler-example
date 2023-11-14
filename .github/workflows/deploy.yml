@@ -25,10 +25,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           touch ~/.ssh/known_hosts
           ssh-keyscan -t rsa ${{ secrets.PRIVATE_SERVER_IP }} >> ~/.ssh/known_hosts
-#          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.PRIVATE_SERVER_IP }} "echo SSH key installed successfully"
 
       - name: Build
-        run: |
+        run: |  
           make example_spider
 
       - name: Deploy to Private Server
@@ -38,4 +37,5 @@ jobs:
 
       - name: Run
         run: |
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > /dev/null 2>&1 &'
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > crawler.log &'
+#          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > /dev/null 2>&1 &'
