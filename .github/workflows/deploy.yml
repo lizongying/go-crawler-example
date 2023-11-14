@@ -20,8 +20,6 @@ jobs:
 
       - name: Setup SSH Key
         run: |
-          SHORT_COMMIT_ID=${{ github.sha }}
-          echo "Commit ID: $SHORT_COMMIT_ID"
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
 #          chmod 600 ~/.ssh/id_rsa
@@ -32,11 +30,11 @@ jobs:
       - name: Build
         run: |
           make example-spider
-#
-#      - name: Deploy to Private Server
-#        run: |
-#          scp -i ~/.ssh/id_rsa -r ./releases/example_spider ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
-#          scp -i ~/.ssh/id_rsa -r ./example.yml ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
+
+      - name: Deploy to Private Server
+        run: |
+          scp -i ~/.ssh/id_rsa -r ./releases/example_spider ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
+          scp -i ~/.ssh/id_rsa -r ./example.yml ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
 #
 #      - name: Run
 #        run: |
