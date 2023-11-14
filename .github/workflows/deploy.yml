@@ -20,22 +20,24 @@ jobs:
 
       - name: Setup SSH Key
         run: |
+          SHORT_COMMIT_ID=${{ github.sha:0:7 }}
+          echo "Commit ID: $SHORT_COMMIT_ID"
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           touch ~/.ssh/known_hosts
-          ssh-keyscan -t rsa ${{ secrets.PRIVATE_SERVER_IP }} >> ~/.ssh/known_hosts
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.PRIVATE_SERVER_IP }} "echo SSH key installed successfully"
-
-      - name: Build
-        run: |
-          make example-spider
-
-      - name: Deploy to Private Server
-        run: |
-          scp -i ~/.ssh/id_rsa -r ./releases/example_spider ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
-          scp -i ~/.ssh/id_rsa -r ./example.yml ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
-
-      - name: Run
-        run: |
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > /dev/null 2>&1 &'
+#          ssh-keyscan -t rsa ${{ secrets.PRIVATE_SERVER_IP }} >> ~/.ssh/known_hosts
+#          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.PRIVATE_SERVER_IP }} "echo SSH key installed successfully"
+#
+#      - name: Build
+#        run: |
+#          make example-spider
+#
+#      - name: Deploy to Private Server
+#        run: |
+#          scp -i ~/.ssh/id_rsa -r ./releases/example_spider ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
+#          scp -i ~/.ssh/id_rsa -r ./example.yml ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
+#
+#      - name: Run
+#        run: |
+#          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > /dev/null 2>&1 &'
