@@ -29,13 +29,13 @@ jobs:
 
       - name: Build
         run: |
-          make example-spider
+          make example_spider
 
       - name: Deploy to Private Server
         run: |
           scp -i ~/.ssh/id_rsa -r ./releases/example_spider ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
           scp -i ~/.ssh/id_rsa -r ./example.yml ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }}:${{ secrets.PRIVATE_SERVER_DIR }}
-#
-#      - name: Run
-#        run: |
-#          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > /dev/null 2>&1 &'
+
+      - name: Run
+        run: |
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > /dev/null 2>&1 &'
