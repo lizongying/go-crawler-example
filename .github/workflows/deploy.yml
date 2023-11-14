@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - development
 
 jobs:
   build:
@@ -22,9 +22,9 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-#          chmod 600 ~/.ssh/id_rsa
-#          touch ~/.ssh/known_hosts
-#          ssh-keyscan -t rsa ${{ secrets.PRIVATE_SERVER_IP }} >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_rsa
+          touch ~/.ssh/known_hosts
+          ssh-keyscan -t rsa ${{ secrets.PRIVATE_SERVER_IP }} >> ~/.ssh/known_hosts
 #          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.PRIVATE_SERVER_IP }} "echo SSH key installed successfully"
 
       - name: Build
