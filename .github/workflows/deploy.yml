@@ -20,7 +20,7 @@ jobs:
 
       - name: Setup SSH Key
         run: |
-          SHORT_COMMIT_ID=${{ github.sha:0:7 }}
+          SHORT_COMMIT_ID=${{ github.sha }}
           echo "Commit ID: ${SHORT_COMMIT_ID}"
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
