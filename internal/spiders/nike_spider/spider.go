@@ -5,6 +5,7 @@ import (
 	"github.com/lizongying/go-crawler/pkg/items"
 	"github.com/lizongying/go-crawler/pkg/request"
 	"github.com/lizongying/go-json/gjson"
+	"time"
 )
 
 type Spider struct {
@@ -37,7 +38,7 @@ func (s *Spider) ParseList(ctx pkg.Context, response pkg.Response) (err error) {
 			SetQuery("endpoint", next).
 			SetQuery("language", "en").
 			SetQuery("localizedRangeStr", "{lowestPrice} — {highestPrice}").
-			SetProxy("http://127.0.0.1:7890").
+			//SetProxy("http://127.0.0.1:7890").
 			SetCallBack(s.ParseList))
 	}
 	return
@@ -84,13 +85,13 @@ func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) 
 			SetQuery("endpoint", next).
 			SetQuery("language", "en").
 			SetQuery("localizedRangeStr", "{lowestPrice} — {highestPrice}").
-			SetProxy("http://127.0.0.1:7890").
+			//SetProxy("http://127.0.0.1:7890").
 			SetCallBack(s.ParseList))
 	}
 	return
 }
 
-// TestList go run cmd/nike_spider/*.go -c dev.yml -n nike -f TestList -m once
+// TestList go run cmd/nike_spider/*.go -c example.yml -n nike -f TestList -m once
 func (s *Spider) TestList(ctx pkg.Context, _ string) (err error) {
 	s.MustYieldRequest(ctx, request.NewRequest().
 		SetUrl("https://api.nike.com/cic/browse/v2").
@@ -100,16 +101,16 @@ func (s *Spider) TestList(ctx pkg.Context, _ string) (err error) {
 		SetQuery("endpoint", "/product_feed/rollup_threads/v2?filter=marketplace%28US%29\u0026filter=language%28en%29\u0026filter=employeePrice%28true%29\u0026anchor=24\u0026consumerChannelId=d9a5bc42-4b9c-4976-858a-f159cf99c647\u0026count=24").
 		SetQuery("language", "en").
 		SetQuery("localizedRangeStr", "{lowestPrice} — {highestPrice}").
-		SetProxy("http://127.0.0.1:7890").
+		//SetProxy("http://127.0.0.1:7890").
 		SetCallBack(s.ParseList))
 	return
 }
 
-// TestIndex go run cmd/nike_spider/*.go -c dev.yml -n nike -f TestIndex -m once
+// TestIndex go run cmd/nike_spider/*.go -c example.yml -n nike -f TestIndex -m once
 func (s *Spider) TestIndex(ctx pkg.Context, _ string) (err error) {
 	s.MustYieldRequest(ctx, request.NewRequest().
 		SetUrl("https://www.nike.com/w").
-		SetProxy("http://127.0.0.1:7890").
+		//SetProxy("http://127.0.0.1:7890").
 		SetCallBack(s.ParseIndex))
 	return
 }
@@ -124,7 +125,8 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 	spider.WithOptions(
 		pkg.WithName("nike"),
 		pkg.WithMongoPipeline(),
-		pkg.WithRetryMaxTimes(0),
+		pkg.WithRetryMaxTimes(10),
+		pkg.WithInterval(time.Second*10),
 	)
 	return
 }

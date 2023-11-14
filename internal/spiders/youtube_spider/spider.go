@@ -333,7 +333,7 @@ func (s *Spider) ParseVideos(ctx pkg.Context, response pkg.Response) (err error)
 	return
 }
 
-// Test go run cmd/youtube_spider/*.go -c dev.yml -n youtube -m once
+// Test go run cmd/youtube_spider/*.go -c example.yml -n youtube -m once
 func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	err = s.YieldRequest(ctx, request.NewRequest().
 		SetExtra(&ExtraVideos{
@@ -349,7 +349,7 @@ func (s *Spider) Test(ctx pkg.Context, _ string) (err error) {
 	return
 }
 
-// FromKeyword go run cmd/youtube_spider/*.go -c dev.yml -n youtube -f FromKeyword -m once
+// FromKeyword go run cmd/youtube_spider/*.go -c example.yml -n youtube -f FromKeyword -m once
 func (s *Spider) FromKeyword(ctx pkg.Context, _ string) (err error) {
 	for _, v := range []string{
 		"veja",

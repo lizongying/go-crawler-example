@@ -1,9 +1,9 @@
 module github.com/lizongying/go-crawler-example
 
-go 1.21
+go 1.21.0
 
 require (
-	github.com/lizongying/go-crawler v0.0.19-0.20231107104105-42d155f75ec7
+	github.com/lizongying/go-crawler v0.0.22-0.20231114045111-684556d7585b
 	github.com/lizongying/go-json v0.0.0-20230906102344-7915011b6304
 	golang.org/x/text v0.13.0
 )
@@ -41,6 +41,7 @@ require (
 	github.com/lizongying/go-gua64 v0.1.0 // indirect
 	github.com/lizongying/go-query v0.0.0-20230720084938-e0776701ba5f // indirect
 	github.com/lizongying/go-re v0.0.0-20230906094757-1b48356fa6db // indirect
+	github.com/lizongying/go-uid v0.0.0-20231109082237-2794e92dcc84 // indirect
 	github.com/lizongying/go-xpath v0.0.0-20230906104639-f46eb0e080c4 // indirect
 	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect

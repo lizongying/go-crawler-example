@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: tidy multi_spider baidu_baike_spider baidu_image_spider baidu_tieba_spider baidu_zhidao_spider bnu_spider douban_spider feixiaohao_spider levi_spider nike_spider youtube_spider zdic_spider zhihu_spider
+all: tidy multi_spider baidu_baike_spider baidu_image_spider baidu_tieba_spider baidu_zhidao_spider bnu_spider douban_spider feixiaohao_spider levi_spider nike_spider youtube_spider zdic_spider zhihu_spider example_spider
 
 module := github.com/lizongying/go-crawler
 
@@ -61,3 +61,7 @@ zdic_spider:
 zhihu_spider:
 	go vet ./cmd/zhihu_spider
 	go build -ldflags "-s -w -X $(module)/pkg/logger.name=zhihu_spider" -o ./releases/zhihu_spider ./cmd/zhihu_spider
+
+example_spider:
+	go vet ./cmd/example_spider
+	go build -ldflags "-s -w -X $(module)/pkg/logger.name=example_spider" -o ./releases/example_spider ./cmd/example_spider

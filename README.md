@@ -4,11 +4,11 @@ go-crawler的爬虫示例。
 
 [go-crawler-example](https://github.com/lizongying/go-crawler-example)
 
-[english](https://github.com/lizongying/go-crawler/README.md)
-
-[中文](https://github.com/lizongying/go-crawler/README_CN.md)
-
 [go-crawler](https://github.com/lizongying/go-crawler)
+
+[english](https://github.com/lizongying/go-crawler/blob/main/README.md)
+
+[中文](https://github.com/lizongying/go-crawler/blob/main/README_CN.md)
 
 ## Usage
 
@@ -62,7 +62,7 @@ make multi_spider
 ### update go-crawler
 
 ```shell
-go get -u github.com/lizongying/go-crawler@42d155f
+go get -u github.com/lizongying/go-crawler@684556d
 make
 
 ```

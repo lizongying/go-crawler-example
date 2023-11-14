@@ -5,6 +5,7 @@ import (
 	"github.com/lizongying/go-crawler/pkg/items"
 	"github.com/lizongying/go-crawler/pkg/request"
 	"github.com/lizongying/go-json/gjson"
+	"time"
 )
 
 type Spider struct {
@@ -53,7 +54,7 @@ func (s *Spider) ParseList(ctx pkg.Context, response pkg.Response) (err error) {
 			SetHeader("x-country", "US").
 			SetHeader("x-locale", "en_US").
 			SetHeader("x-operationname", "categories").
-			SetProxy("http://127.0.0.1:7890").
+			//SetProxy("http://127.0.0.1:7890").
 			SetCallBack(s.ParseList))
 	}
 	return
@@ -104,13 +105,13 @@ func (s *Spider) ParseIndex(ctx pkg.Context, response pkg.Response) (err error) 
 			SetHeader("x-country", "US").
 			SetHeader("x-locale", "en_US").
 			SetHeader("x-operationname", "categories").
-			SetProxy("http://127.0.0.1:7890").
+			//SetProxy("http://127.0.0.1:7890").
 			SetCallBack(s.ParseList))
 	}
 	return
 }
 
-// TestList go run cmd/levi_spider/*.go -c dev.yml -n levi -f TestList -m once
+// TestList go run cmd/levi_spider/*.go -c example.yml -n levi -f TestList -m once
 func (s *Spider) TestList(ctx pkg.Context, _ string) (err error) {
 	js := map[string]any{
 		"operationName": "categories",
@@ -137,16 +138,16 @@ func (s *Spider) TestList(ctx pkg.Context, _ string) (err error) {
 		SetHeader("x-country", "US").
 		SetHeader("x-locale", "en_US").
 		SetHeader("x-operationname", "categories").
-		SetProxy("http://127.0.0.1:7890").
+		//SetProxy("http://127.0.0.1:7890").
 		SetCallBack(s.ParseList))
 	return
 }
 
-// TestIndex go run cmd/levi_spider/*.go -c dev.yml -n levi -f TestIndex -m once
+// TestIndex go run cmd/levi_spider/*.go -c example.yml -n levi -f TestIndex -m once
 func (s *Spider) TestIndex(ctx pkg.Context, _ string) (err error) {
 	s.MustYieldRequest(ctx, request.NewRequest().
 		SetUrl("https://www.levi.com/US/en_US/clothing/c/levi_clothing").
-		SetProxy("http://127.0.0.1:7890").
+		//SetProxy("http://127.0.0.1:7890").
 		SetCallBack(s.ParseIndex))
 	return
 }
@@ -161,7 +162,8 @@ func NewSpider(baseSpider pkg.Spider) (spider pkg.Spider, err error) {
 	spider.WithOptions(
 		pkg.WithName("levi"),
 		pkg.WithMongoPipeline(),
-		pkg.WithRetryMaxTimes(0),
+		pkg.WithRetryMaxTimes(10),
+		pkg.WithInterval(time.Second*10),
 	)
 	return
 }
