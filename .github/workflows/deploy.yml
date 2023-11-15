@@ -30,7 +30,6 @@ jobs:
         run: |
           make example_spider
           cp ./cmd/example_spider/Dockerfile .
-          ls ./Dockerfile
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -48,6 +47,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
           tags: crawler/example-spider:latest
 
