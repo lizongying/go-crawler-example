@@ -29,7 +29,8 @@ jobs:
       - name: Make
         run: |
           make example_spider
-          cp ./cmd/example_spider/Dockerfile ./
+          cp ./cmd/example_spider/Dockerfile .
+          ll Dockerfile
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -52,5 +53,4 @@ jobs:
 
       - name: Run
         run: |
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > crawler.log &'
-##          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && nohup ./example_spider -c example.yml > /dev/null 2>&1 &'
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin && docker pull ghcr.io/${{ github.actor }}/crawler/example-spider:latest'
