@@ -30,7 +30,7 @@ jobs:
         run: |
           make example_spider
           cp ./cmd/example_spider/Dockerfile .
-          ll Dockerfile
+          ls ./Dockerfile
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
