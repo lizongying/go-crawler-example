@@ -64,4 +64,4 @@ zhihu_spider:
 
 example_spider:
 	go vet ./cmd/example_spider
-	CGO_ENABLED=0 go build -ldflags "-s -w -X $(module)/pkg/logger.name=example_spider" -o ./releases/example_spider ./cmd/example_spider
+	CGO_ENABLED=1 go build -ldflags "-s -w -X $(module)/pkg/logger.name=example_spider" -o ./releases/example_spider ./cmd/example_spider

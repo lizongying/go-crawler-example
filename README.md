@@ -70,11 +70,12 @@ make
 ## Docker build
 
 ```shell
-docker build -f ./cmd/baidu_baike_spider/Dockerfile -t crawler/baidu-baike-spider:latest . 
+docker build -f ./cmd/baidu_baike_spider/Dockerfile -t crawler/baidu-baike-spider:latest .
+docker build -f ./cmd/example_spider/Dockerfile -t crawler/example-spider:latest .
 
 ```
 
 ```shell
 docker run -d crawler/baidu-baike-spider:latest spider -c example.yml -n baidu-baike -f Test -m once
-
+docker run -d crawler/example-spider:latest example-spider
 ```
