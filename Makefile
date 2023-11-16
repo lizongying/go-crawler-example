@@ -65,3 +65,7 @@ zhihu_spider:
 example_spider:
 	go vet ./cmd/example_spider
 	go build -ldflags "-s -w -X $(module)/pkg/logger.name=example_spider" -o ./releases/example_spider ./cmd/example_spider
+
+example_spider_linux_amd64:
+	go vet ./cmd/example_spider
+	CC=x86_64-linux-musl-gcc GOOS=linux GOARCH=amd64 CGO_ENABLED=1 CGO_LDFLAGS="-static" go build -ldflags "-s -w -X $(module)/pkg/logger.name=example_spider" -o ./releases/example_spider_linux_amd64 ./cmd/example_spider

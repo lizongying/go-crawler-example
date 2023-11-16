@@ -62,19 +62,34 @@ make multi_spider
 ### update go-crawler
 
 ```shell
-go get -u github.com/lizongying/go-crawler@684556d
+go get -u github.com/lizongying/go-crawler@ef7431d
 make
 
 ```
 
 ## Docker build
 
+### build
+
 ```shell
-docker build -f ./cmd/baidu_baike_spider/Dockerfile -t crawler/baidu-baike-spider:latest . 
+# cross platform
+docker buildx create --use
+
+# for linux
+docker buildx build --platform linux/amd64 -f ./cmd/example_spider/Dockerfile -t lizongying/go-crawler-example/example-spider:amd64 . --load
+
+# for mac m1
+docker buildx build --platform linux/arm64 -f ./cmd/example_spider/Dockerfile -t lizongying/go-crawler-example/example-spider:arm64 . --load
 
 ```
 
+### run
+
 ```shell
-docker run -d crawler/baidu-baike-spider:latest spider -c example.yml -n baidu-baike -f Test -m once
+# once
+docker run -d lizongying/go-crawler-example/example-spider:arm64 -c example.yml -n levi -f TestList -m once
+
+# manual
+docker run -p 8090:8090 -d lizongying/go-crawler-example/example-spider:arm64 -c example.yml
 
 ```
