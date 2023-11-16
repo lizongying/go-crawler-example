@@ -12,29 +12,29 @@ go-crawler的爬虫示例。
 
 ## Usage
 
-[baidu-baike](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/baidu_baike_spider)
+[baidu-baike](./tree/main/internal/spiders/baidu_baike_spider)
 
-[baidu-image](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/baidu_image_spider)
+[baidu-image](./tree/main/internal/spiders/baidu_image_spider)
 
-[baidu-tieba](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/baidu_tieba_spider)
+[baidu-tieba](./tree/main/internal/spiders/baidu_tieba_spider)
 
-[baidu-zhidao](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/baidu_zhidao_spider)
+[baidu-zhidao](./tree/main/internal/spiders/baidu_zhidao_spider)
 
-[bnu](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/bnu_spider)
+[bnu](./tree/main/internal/spiders/bnu_spider)
 
-[douban](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/douban_spider)
+[douban](./tree/main/internal/spiders/douban_spider)
 
-[feixiaohao](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/feixiaohao_spider)
+[feixiaohao](./tree/main/internal/spiders/feixiaohao_spider)
 
-[levi](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/levi_spider)
+[levi](./tree/main/internal/spiders/levi_spider)
 
-[nike](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/nike_spider)
+[nike](./tree/main/internal/spiders/nike_spider)
 
-[youtube](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/youtube_spider)
+[youtube](./tree/main/internal/spiders/youtube_spider)
 
-[zdic](https://github.com/lizongying/go-crawler-example/tree/main/cmd/zdic_spider)
+[zdic](./tree/main/cmd/zdic_spider)
 
-[zhihu](https://github.com/lizongying/go-crawler-example/tree/main/internal/spiders/zhihu_spider)
+[zhihu](./tree/main/internal/spiders/zhihu_spider)
 
 ### clone
 
@@ -67,7 +67,11 @@ make
 
 ```
 
-## Docker build
+## Docker image
+
+[ghcr.io](https://github.com/lizongying/go-crawler-example/pkgs/container/go-crawler-example)
+
+[hub.docker.com](https://hub.docker.com/r/lizongying/go-crawler-example)
 
 ### build
 
