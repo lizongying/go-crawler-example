@@ -49,7 +49,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/go-crawler/example-spider:latest
+          tags: ghcr.io/go-crawler-example:latest
 
       - name: Run
         run: |
