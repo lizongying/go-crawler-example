@@ -12,29 +12,29 @@ go-crawler的爬虫示例。
 
 ## Usage
 
-[baidu-baike](./tree/main/internal/spiders/baidu_baike_spider)
+[baidu-baike](/lizongying/go-crawler-example/tree/main/internal/spiders/baidu_baike_spider)
 
-[baidu-image](./tree/main/internal/spiders/baidu_image_spider)
+[baidu-image](/lizongying/go-crawler-example/tree/main/internal/spiders/baidu_image_spider)
 
-[baidu-tieba](./tree/main/internal/spiders/baidu_tieba_spider)
+[baidu-tieba](/lizongying/go-crawler-example/tree/main/internal/spiders/baidu_tieba_spider)
 
-[baidu-zhidao](./tree/main/internal/spiders/baidu_zhidao_spider)
+[baidu-zhidao](/lizongying/go-crawler-example/tree/main/internal/spiders/baidu_zhidao_spider)
 
-[bnu](./tree/main/internal/spiders/bnu_spider)
+[bnu](/lizongying/go-crawler-example/tree/main/internal/spiders/bnu_spider)
 
-[douban](./tree/main/internal/spiders/douban_spider)
+[douban](/lizongying/go-crawler-example/tree/main/internal/spiders/douban_spider)
 
-[feixiaohao](./tree/main/internal/spiders/feixiaohao_spider)
+[feixiaohao](/lizongying/go-crawler-example/tree/main/internal/spiders/feixiaohao_spider)
 
-[levi](./tree/main/internal/spiders/levi_spider)
+[levi](/lizongying/go-crawler-example/tree/main/internal/spiders/levi_spider)
 
-[nike](./tree/main/internal/spiders/nike_spider)
+[nike](/lizongying/go-crawler-example/tree/main/internal/spiders/nike_spider)
 
-[youtube](./tree/main/internal/spiders/youtube_spider)
+[youtube](/lizongying/go-crawler-example/tree/main/internal/spiders/youtube_spider)
 
-[zdic](./tree/main/cmd/zdic_spider)
+[zdic](/lizongying/go-crawler-example/tree/main/cmd/zdic_spider)
 
-[zhihu](./tree/main/internal/spiders/zhihu_spider)
+[zhihu](/lizongying/go-crawler-example/tree/main/internal/spiders/zhihu_spider)
 
 ### clone
 
