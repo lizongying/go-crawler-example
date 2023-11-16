@@ -82,4 +82,4 @@ jobs:
 
       - name: Docker pull
         run: |
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'cd ${{ secrets.PRIVATE_SERVER_DIR }} && docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}  '
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker pull ${{ env.IMAGE_NAME }}:development '
