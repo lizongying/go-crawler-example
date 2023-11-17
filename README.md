@@ -62,7 +62,7 @@ make multi_spider
 ### update go-crawler
 
 ```shell
-go get -u github.com/lizongying/go-crawler@ef7431d
+go get -u github.com/lizongying/go-crawler@46f2c9a
 make
 
 ```
