@@ -73,4 +73,4 @@ jobs:
 
       - name: Docker pull
         run: |
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker stop ${{ env.IMAGE_NAME }}:development && docker rm -f ${{ env.IMAGE_NAME }}:development && docker images|grep none|awk '{print $3 }'|xargs docker rmi && docker pull ${{ env.IMAGE_NAME }}:development && docker run -p 8090:8090 -d ${{ env.IMAGE_NAME }}:development'
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker stop $(docker ps -a -q --filter ancestor=${{ env.IMAGE_NAME }}:development) && docker rm -f ${{ env.IMAGE_NAME }}:development && docker images|grep none|awk '{print $3 }'|xargs docker rmi && docker pull ${{ env.IMAGE_NAME }}:development && docker run -p 8090:8090 -d ${{ env.IMAGE_NAME }}:development'
