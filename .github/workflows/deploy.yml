@@ -77,7 +77,7 @@ jobs:
           echo 'stopped'
           ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker rm -f $(docker ps -a -q -f status="exited")'
           echo 'killed'
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker images|awk "lizongying\//go-crawler-example/ {print $3}"|xargs -r docker rmi'
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker images|awk "lizongying\/go-crawler-example/ {print $3}"|xargs -r docker rmi'
           echo 'killed'
           ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker pull ${{ env.IMAGE_NAME }}:development && docker run -p 8090:8090 -d ${{ env.IMAGE_NAME }}:development'
           echo 'running'
