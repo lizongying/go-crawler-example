@@ -7,7 +7,7 @@ COPY . .
 RUN CGO_ENABLED=1 CGO_LDFLAGS="-static" go build -ldflags "-s -w -X $(module)/pkg/logger.name=example_spider" -o ./releases/example_spider ./cmd/example_spider
 
 
-FROM alpine:latest
+FROM --platform=${TARGETPLATFORM} alpine:latest
 
 WORKDIR /app
 
