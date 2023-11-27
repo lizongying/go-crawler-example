@@ -76,11 +76,5 @@ jobs:
           ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker ps -a -q -f ancestor=${{ env.IMAGE_NAME }}:{{ github.event_name == 'push' && github.ref_starts_with('refs/tags/') && github.event.ref }}|xargs -r docker stop"
           echo 'container stopped'
 
-#          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker ps -a -q -f status='exited'|xargs -r docker rm -f"
-#          echo 'container killed'
-
           ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker pull ${{ env.IMAGE_NAME }}:{{ github.event_name == 'push' && github.ref_starts_with('refs/tags/') && github.event.ref }} && docker run -d ${{ env.IMAGE_NAME }}:{{ github.event_name == 'push' && github.ref_starts_with('refs/tags/') && github.event.ref }}"
-          echo 'images pull & running'
-
-#          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker images|awk '/none/ {print $3}'|xargs -r docker rmi"
-#          echo 'images clear'
+          echo 'images pull & run'
