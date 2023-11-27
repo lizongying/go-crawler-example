@@ -80,14 +80,6 @@ jobs:
           
           ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker ps -a -q -f ancestor=${{ env.IMAGE_NAME }}:$VERSION|xargs -r docker stop"
           echo 'container stopped'
-          
-          PORT=$(ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "
-          port=8090
-          while /usr/sbin/lsof -i :\$port; do
-          ((port++))
-          done
-          echo \$port
-          ")
 
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker pull ${{ env.IMAGE_NAME }}:$VERSION && docker run -p $PORT:8090 -d ${{ env.IMAGE_NAME }}:$VERSION"
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker pull ${{ env.IMAGE_NAME }}:$VERSION && docker run -p 8090-9090:8090 -d ${{ env.IMAGE_NAME }}:$VERSION"
           echo 'images pull & run'
