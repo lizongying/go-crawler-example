@@ -72,9 +72,11 @@ jobs:
           ssh-keyscan -t rsa ${{ secrets.PRIVATE_SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Docker pull
+        env:
+          VERSION: ${{ github.event_name == 'push' && github.ref_starts_with('refs/tags/') && github.event.ref }}
         run: |
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker ps -a -q -f ancestor=${{ env.IMAGE_NAME }}:{{ github.event_name == 'push' && github.ref_starts_with('refs/tags/') && github.event.ref }}|xargs -r docker stop"
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker ps -a -q -f ancestor=${{ env.IMAGE_NAME }}:$VERSION|xargs -r docker stop"
           echo 'container stopped'
 
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker pull ${{ env.IMAGE_NAME }}:{{ github.event_name == 'push' && github.ref_starts_with('refs/tags/') && github.event.ref }} && docker run -d ${{ env.IMAGE_NAME }}:{{ github.event_name == 'push' && github.ref_starts_with('refs/tags/') && github.event.ref }}"
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker pull ${{ env.IMAGE_NAME }}:$VERSION && docker run -d ${{ env.IMAGE_NAME }}:$VERSION"
           echo 'images pull & run'
