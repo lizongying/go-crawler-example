@@ -73,7 +73,7 @@ jobs:
 
       - name: Docker pull
         env:
-          VERSION: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && github.event.ref }}
+          VERSION: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && github.event.ref/refs\/tags\// }}
         run: |
           echo "Tag version is $VERSION"
           
