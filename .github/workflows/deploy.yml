@@ -2,8 +2,8 @@ name: Deploy
 
 on:
   push:
-    branches:
-      - development
+    tags:
+      - 'v*'
 
 env:
   REGISTRY: ghcr.io
@@ -46,13 +46,14 @@ jobs:
         with:
           images: |
             ${{ env.IMAGE_NAME }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}            
 
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./cmd/example_spider/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -72,14 +73,13 @@ jobs:
           ssh-keyscan -t rsa ${{ secrets.PRIVATE_SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Docker pull
+        env:
+          VERSION: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && github.ref_name }}
         run: |
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker stop $(docker ps -a -q -f ancestor=${{ env.IMAGE_NAME }}:development)'
-          echo 'stopped'
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker rm -f $(docker ps -a -q -f status="exited")'
-          echo 'killed'
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker images|awk "lizongying\/go-crawler-example/ {print $3}"|xargs -r docker rmi'
-          echo 'killed'
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker pull ${{ env.IMAGE_NAME }}:development && docker run -p 8090:8090 -d ${{ env.IMAGE_NAME }}:development'
-          echo 'running'
-          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} 'docker images|awk "/none/ {print $3}"|xargs -r docker rmi'
-          echo 'clear'
+          echo "Tag version is $VERSION"
+          
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker ps -a -q -f ancestor=${{ env.IMAGE_NAME }}:$VERSION|xargs -r docker stop"
+          echo 'container stopped'
+
+          ssh ${{ secrets.PRIVATE_SERVER_USERNAME }}@${{ secrets.PRIVATE_SERVER_IP }} "docker pull ${{ env.IMAGE_NAME }}:$VERSION && docker run -d ${{ env.IMAGE_NAME }}:$VERSION"
+          echo 'images pull & run'

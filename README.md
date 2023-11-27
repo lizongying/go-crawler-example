@@ -62,7 +62,7 @@ make multi_spider
 ### update go-crawler
 
 ```shell
-go get -u github.com/lizongying/go-crawler@7d74e17
+go get -u github.com/lizongying/go-crawler@7c81a24
 make
 
 ```
@@ -78,12 +78,15 @@ make
 ```shell
 # cross platform
 docker buildx create --use
+docker buildx inspect --bootstrap
 
-# for linux
-docker buildx build --platform linux/amd64 -f ./cmd/example_spider/Dockerfile -t lizongying/go-crawler-example/example-spider:amd64 . --load
+# https://github.com/docker/buildx/issues/290
 
-# for mac m1
-docker buildx build --platform linux/arm64 -f ./cmd/example_spider/Dockerfile -t lizongying/go-crawler-example/example-spider:arm64 . --load
+# for amd64
+docker buildx build --platform linux/amd64 -f ./cmd/example_spider/Dockerfile -t lizongying/go-crawler-example/example-spider:latest .
+
+# for arm64(mac m1)
+docker buildx build --platform linux/arm64 -f ./cmd/example_spider/Dockerfile -t lizongying/go-crawler-example/example-spider:latest . --load
 
 ```
 
@@ -91,9 +94,9 @@ docker buildx build --platform linux/arm64 -f ./cmd/example_spider/Dockerfile -t
 
 ```shell
 # once
-docker run -d lizongying/go-crawler-example/example-spider:arm64 -c example.yml -n levi -f TestList -m once
+docker run -d lizongying/go-crawler-example/example-spider:latest -c example.yml -n levi -f TestList -m once
 
 # manual
-docker run -p 8090:8090 -d lizongying/go-crawler-example/example-spider:arm64 -c example.yml
+docker run -p 8090:8090 -d lizongying/go-crawler-example/example-spider:latest -c example.yml
 
 ```
