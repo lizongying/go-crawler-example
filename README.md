@@ -62,7 +62,8 @@ make multi_spider
 ### update go-crawler
 
 ```shell
-go get -u github.com/lizongying/go-crawler@c02d5e5
+go get -u github.com/lizongying/go-crawler@d66d834
+go mod tidy
 make
 
 ```
@@ -97,6 +98,6 @@ docker buildx build --platform linux/arm64 -f ./cmd/example_spider/Dockerfile -t
 docker run -d lizongying/go-crawler-example:test -c example.yml -n levi -f TestList -m once
 
 # manual
-docker run -p 8090:8090 -d lizongying/go-crawler-example:test -c example.yml
+docker run -p 8090-9090:8090 -d lizongying/go-crawler-example:test -c example.yml
 
 ```
